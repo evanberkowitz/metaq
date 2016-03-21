@@ -6,7 +6,7 @@ In many cases, you might prefer to bundle many small tasks together to achieve b
 
 `METAQ` doesn't care about what the individual tasks are.  So, if you have multiple projects going at once, you can nevertheless use the same `METAQ` and the tasks will be queued and run side-by-side with no problem.
 
-Essentially, this allows you to back-fill your tasks, and to submit jobs that build priority in the queue that you can add tasks to after submission.
+Essentially, this allows you to back-fill your tasks, and to submit jobs that build priority in the queue that you can add tasks to after submission.  Different users can put tasks in the same `METAQ` and (as long as the file permissions are liberal enough) can share the load.
 
 # QUICK SUMMARY
 
