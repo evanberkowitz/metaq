@@ -8,7 +8,7 @@ In many cases, you might prefer to bundle many small tasks together to achieve b
 
 Essentially, this allows you to back-fill your tasks, and to submit jobs that build priority in the queue that you can add tasks to after submission.  Different users can put tasks in the same `METAQ` and (as long as the file permissions are liberal enough) can share the load.
 
-# QUICK SUMMARY [quick-summary]
+# QUICK SUMMARY
 
 JOB SCRIPTS all do the same thing when launched by the BATCH SCHEDULER: look through your TASK SCRIPTS and start what's possible.
 
@@ -26,7 +26,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 #Table of Contents
 
 - METAQ
-- [Quick Summary](#quicksummary)
+- [Quick Summary](#quick-summary)
 - Table of Contents
 - ...
 - [Miscellaneous](#miscellaneous)
