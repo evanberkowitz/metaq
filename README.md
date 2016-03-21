@@ -209,18 +209,20 @@ So, to summarize: GPU is really a stand-in for a way to partition the physical n
 
 METAQ provides a number of small accessories to see what's going on.
 
-`x/status`
+####`x/status`
     Reports based on tasks' PROJECT flag what's in the priority, todo, and hold folders.
 
-`x/running`
+####`x/running`
     Reports the current status of jobs in the working folder.
 
-`x/reset`
-    # WARNING WARNING WARNING
-    #                           SERIOUSLY
-    #                                       HANDLE WITH CARE!
+####`x/reset`
+WARNING WARNING WARNING
+
+SERIOUSLY
+
+HANDLE WITH CARE!
     
-   If your queue contains only work for one machine, this is perfectly fine.  
+If your queue contains only work for one machine, this is perfectly fine.  
 However, if METAQ_JOB_RUNNING (see the section on interacting with the batch scheduler) could potentially miss the existence of a job then this command can wreck havoc.
 This task looks in the working directory, and looks for abandoned work.  
 If it finds work for a METAQ_JOB_ID that is no longer running, it moves the task scripts into the priority folder and deletes the working/METAQ_JOB_ID folder.
