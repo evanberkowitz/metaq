@@ -50,6 +50,10 @@ fi
 if [[ -z "$METAQ_MACHINE" ]]; then
     METAQ_MACHINE=machine
 fi
+if [[ -z "$METAQ_SIMULTANEOUS_TASKS" ]]; then
+    METAQ_SIMULTANEOUS_TASKS=1048576
+fi
+
 
 ############################
 ############################ GET METAQ LIBRARY
@@ -225,6 +229,13 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
         METAQ_PRINT 0 "Looping over work in ${METAQ_REMAINING}"
         for i in $METAQ_REMAINING/*; do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
+            while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
+                METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) encountered."
+                METAQ_PRINT 2 "$($METAQ_X/timespan $(METAQ_TIME_REMAINING)) remains on the wall clock."
+                METAQ_PRINT 2 "$(METAQ_AVAILABLE_NODES) nodes will sit idle until task completion."
+                METAQ_PRINT 2 "$(METAQ_AVAILABLE_GPUS) gpus will sit idle until task completion."
+                sleep 10
+            done
             if [[ ! $i == "$METAQ_REMAINING/*" ]]; then
                 METAQ_PRINT 1 $i;
                 METAQ_ATTEMPT_TASK $i

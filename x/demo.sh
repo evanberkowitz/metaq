@@ -46,6 +46,7 @@ METAQ=$(pwd)
 METAQ_JOB_ID=metaq.demo.job.$RANDOM
 METAQ_NODES=16  # It's a lie!
 METAQ_GPUS=32   # It's a lie!
+METAQ_SIMULTANEOUS_TASKS=4
 METAQ_RUN_TIME=300
 
 source x/launch.sh

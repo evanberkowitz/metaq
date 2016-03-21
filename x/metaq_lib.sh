@@ -77,6 +77,10 @@ function METAQ_AVAILABLE_NODES {
     grep -i nodes $METAQ_RESOURCES | awk 'BEGIN{total=0} {total+=$1} END {print total}' 2>/dev/null
 }
 
+function METAQ_CURRENT_TASKS {
+    echo $[ ( $(grep -i dedicated $METAQ_RESOURCES | wc -l) - $(grep -i released $METAQ_RESOURCES | wc -l) ) / 2 ]
+}
+
 function METAQ_TIME_REMAINING {
     METAQ_NOW=$(date "+%s")
     echo "$METAQ_CLOCK_LIMIT $METAQ_NOW" | awk '{print $1-$2}'

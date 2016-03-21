@@ -201,7 +201,10 @@ METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but
                                 # Would interact with METAQ MACHINE flag.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
-                                
+METAQ_SIMULTANEOUS_TASKS=1048576 # An integer that limits how many tasks can run concurrently.
+                                 # Some environments limit how many simultaneous tasks you can submit.  For example,
+                                 # [on Titan, users are artificially limited to 100 simultaneous aprun processes](https://www.olcf.ornl.gov/kb_articles/using-the-aprun-command/).
+
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.
 # Or, if you have a script for populating the METAQ/{todo,priority} folders, you can run it now.
@@ -297,9 +300,11 @@ Job scripts have some `/full/path/to/metaq`s that need to actually point to the 
 
 # KNOWN BUGS AND COMPLAINTS
 
-The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
+- [ ] The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
 
-Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
+- [ ] Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
+
+- [ ] Big tasks are not preferred over small tasks.
 
 # LICENSE
 
