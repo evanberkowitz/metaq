@@ -28,6 +28,8 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 - METAQ
 - [Quick Summary](#quick-summary)
 - Table of Contents
+- ...
+- [Miscellaneous](#misc)
 
 # BASIC INTRODUCTION
 
@@ -197,7 +199,7 @@ source ${METAQ}/x/launch.sh     # ANYTHING BELOW HERE IS NOT GUARANTEED TO RUN!
 # AND THAT IS ALL!
 ```
 
-# MISCELLANEOUS
+# [MISCELLANEOUS](#misc)
 
 ##What is meant by a "GPU" and a "NODE"?
 
