@@ -295,3 +295,6 @@ The business about NODEs and GPUs is more subtle than is ideal.  But without mak
 
 Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
 
+# LICENSE
+
+I would ultimately like to publish this git repo and a short document to the arXiv.  I imagine releasing under a license that's like [CC-BY-SA](https://creativecommons.org/licenses/by-sa/2.0/) for software, so that the acknowledgement requirement binds upon use, rather than upon distribution.
