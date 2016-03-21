@@ -31,6 +31,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 - [Basic Introduction](#basic-introduction)
 - [Task Script Structure](#task-script-structure)
 - [METAQ Flags](#metaq-flags)
+  - [Nodes](#metaq-nodes-n)
 - [Job Script Structure](#job-script-structure)
 - [Miscellaneous](#miscellaneous)
 - [METAQ Monitoring](#metaq-monitoring)
