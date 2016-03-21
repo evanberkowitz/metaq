@@ -26,10 +26,10 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 #Table of Contents
 
 - METAQ
-- [Quick Summary](#quick-summary)
+- [Quick Summary](#quicksummary)
 - Table of Contents
 - ...
-- [Miscellaneous][]
+- [Miscellaneous](#miscellaneous)
 
 # BASIC INTRODUCTION
 
