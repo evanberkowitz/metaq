@@ -1,10 +1,10 @@
 # METAQ
 
-METAQ is a system for bundling jobs for supercomputing in an environment with a batch scheduler like SLURM or PBS.
+`METAQ` (pronounced "meta-queue") is a system for bundling jobs for supercomputing in an environment with a batch scheduler like `SLURM` or `PBS`.
 
-In many cases, you might prefer to bundle many small tasks together to achieve better throughput or a charging discount.  METAQ is designed to allow you to submit big bundled jobs easily, by creating a queue for your own work, that will run in a near-optimal way, wasting very little of your allocation.
+In many cases, you might prefer to bundle many small tasks together to achieve better throughput or a charging discount.  `METAQ` is designed to allow you to submit big bundled jobs easily, by creating a queue for your own work, that will run in a near-optimal way, wasting very little of your allocation.
 
-METAQ doesn't care about what the individual tasks are.  So, if you have multiple projects going at once, you can nevertheless use the same METAQ and the tasks will be queued and run side-by-side with no problem.
+`METAQ` doesn't care about what the individual tasks are.  So, if you have multiple projects going at once, you can nevertheless use the same `METAQ` and the tasks will be queued and run side-by-side with no problem.
 
 Essentially, this allows you to back-fill your tasks, and to submit jobs that build priority in the queue that you can add tasks to after submission.
 
@@ -15,8 +15,8 @@ JOB SCRIPTS all do the same thing when launched by the BATCH SCHEDULER: look thr
 The BATCH SCHEDULER controls the computational resources.  This is chosen by the administrator of your computer.  Examples include SLURM and PBS.
 
 JOB SCRIPTS     are bash scripts that get submitted to the scheduler, 
-                contain some amount of user-specified METAQ options,
-                convert BATCH SCHEDULER variables to METAQ variables, and 
+                contain some amount of user-specified `METAQ` options,
+                convert BATCH SCHEDULER variables to `METAQ` variables, and 
                 call `METAQ/x/launch.sh`
 
 TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
@@ -25,7 +25,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 
 # BASIC INTRODUCTION
 
-Users create various task scripts to do some hard work (meaning supercomputing) as usual.  These task scripts can be essentially anything, as long as they contain some METAQ markup.  They can include setup steps and whatever else you want.  It is these task scripts that contain the command that tells the scheduler to put work onto the compute nodes (for example, in a SLURM environment these task scripts contain `srun` commands).
+Users create various task scripts to do some hard work (meaning supercomputing) as usual.  These task scripts can be essentially anything, as long as they contain some `METAQ` markup.  They can include setup steps and whatever else you want.  It is these task scripts that contain the command that tells the scheduler to put work onto the compute nodes (for example, in a SLURM environment these task scripts contain `srun` commands).
 
 These task scripts exist in the `METAQ/todo` folder, or they can be symbolically linked in.  They will be moved to the `METAQ/working` folder and ultimately to the `METAQ/finished` folder upon completion.
 
@@ -47,9 +47,9 @@ loop over all possible remaining tasks until there are none:
 
 # TASK SCRIPT STRUCTURE
 
-The structure of a task script is only very loosely constrained.  
+Task scripts must be directly executable, so if you script in a language that isn't bash, you must include the correct shebang.  It need not be `bash`.  The structure of a task script is only very loosely constrained.  
 
-You tell METAQ about the task by incorporating flags that METAQ understands into the task script.  A bare-bones script looks like this:
+You tell `METAQ` about the task by incorporating flags that `METAQ` understands into the task script.  A bare-bones script looks like this:
 ```bash
 #!/bin/bash
 #METAQ GPUS 2
@@ -57,8 +57,8 @@ You tell METAQ about the task by incorporating flags that METAQ understands into
 #METAQ MIN_WC_TIME 5:00
 #METAQ PROJECT metaq.example.1
 
-do_setup
-load_modules
+do setup
+load modules
 etc
 
 echo "working hard"
@@ -66,7 +66,8 @@ aprun -n 2 [...]
 echo "finished"
 ```
 
-However, I often make the task scripts themselves legal submittable scripts, from the point of view of the batch scheduler.  This way, if something goes askew (for example, a job hits the wall clock time before a task is complete) you can clean up very easily.
+However, I often make the task scripts themselves legal submittable scripts, from the point of view of the batch scheduler.  This way, if something goes askew (for example, a job hits the wall clock time before a task is complete) you can manually clean up very easily (though `METAQ` provides some amount of automatic clean-up too).
+
 So, a task script (in a PBS environment) might look like
 ```bash
 #!/bin/bash
@@ -110,7 +111,7 @@ So, in the above example, you see
 #METAQ PROJECT metaq.example.1
 ```
 
-What FLAGs are understood by METAQ and what do they mean?
+What FLAGs are understood by `METAQ` and what do they mean?
 
 ####`#METAQ NODES N`
 This task requires N nodes.
@@ -123,7 +124,7 @@ This task requires the job to still have HH:MM:SS available before starting.
 
 This helps avoid having work that fails due to interruption.
 
-You may specify times in the format understood by `METAQ/x/seconds`, which converts the passed string into a number of seconds.
+You may specify times in the format understood by `METAQ/x/seconds`, which converts the passed string into a number of seconds.  So, you don't have to specify canonically-formatted times.  For example, you can specify 90:00 or 5400 instead of 1:30:00.
     
 ####`#METAQ LOG /absolute/path/to/log/file`
 Write the running log of this task to the specified path.  
@@ -131,10 +132,10 @@ Write the running log of this task to the specified path.
 ####`#METAQ PROJECT some.string.you.want.for.accounting.purposes`
 METAQ doesn't worry about the task's project. However, it does log projects to `METAQ/jobs/${job_id}/resources`.  This is convenient if you have many comingled projects (or parts of projects) in the same `METAQ`.
 
-It (probably) makes sense to have the string prefixed in order of importance.
+It (probably) makes sense to have the string prefixed in order of generality (most specific detail last).
 
 ####`#METAQ MACHINE machine`
-This currently doesn't do anything.
+THIS CURRENTLY DOESN'T DO ANYTHING.
 
 The intention is: If multiple machines can see the same `METAQ` but, for example, have different hardware (and thus incompatible binaries) you can nevertheless keep the `METAQ/todo` folder comingled.
 
@@ -202,13 +203,13 @@ If you CAN overcommit (eg. on Surface), then potentially what you should mean by
 
 However, it may be that your binary is smart and knows how make use of all the resources on the whole physical node at once.  In that case you can again forget about GPUs and just worry about NODEs.
 
-If some of your tasks are smart and can use the whole node and some cannot, you need to be careful.  Because METAQ makes no promises about where the available NODEs and GPUs are.  It could be, for example, that there is 1 GPU free over HERE and a bunch of CPUs free over THERE and then it may not make sense to run a 1 NODE 1 GPU job.  In this case you should again think of NODES as representing full physical nodes (CPUs and GPUs) and simply be OK with wasting some of the resources some of the time.
+If some of your tasks are smart and can use the whole node and some cannot, you need to be careful.  Because `METAQ` makes no promises about where the available NODEs and GPUs are.  It could be, for example, that there is 1 GPU free over HERE and a bunch of CPUs free over THERE and then it may not make sense to run a 1 NODE 1 GPU job.  In this case you should again think of NODES as representing full physical nodes (CPUs and GPUs) and simply be OK with wasting some of the resources some of the time.
     
 So, to summarize: GPU is really a stand-in for a way to partition the physical node.  You should make sure your partition makes sense and is compatible between all your tasks.
 
 # METAQ MONITORING
 
-METAQ provides a number of small accessories to see what's going on.  
+`METAQ` provides a number of small accessories to see what's going on.  
 
 ####`x/status`
 Reports based on tasks' PROJECT flag what's in the `METAQ/{priority,todo,hold}` folders.
@@ -230,7 +231,7 @@ If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the ta
 
 ## INTERACTING WITH THE BATCH SCHEDULER
 
-For some minor things METAQ needs to know about your batch scheduler.
+For some accessories, `METAQ` needs to know about your batch scheduler.
 
 It always looks in the shell file (or symbolic link) `METAQ/x/batch.sh` for information about your batch scheduler.  Files for SLURM and PBS are provided.
 
