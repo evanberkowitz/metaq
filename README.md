@@ -1,8 +1,8 @@
 # METAQ
 
-`METAQ` (pronounced "meta-queue") is a system for bundling jobs for supercomputing in an environment with a batch scheduler like [`SLURM`](https://en.wikipedia.org/wiki/Slurm_Workload_Manager) or [`PBS`](https://en.wikipedia.org/wiki/Portable_Batch_System).
+`METAQ` (pronounced "meta-queue") is a system for bundling tasks for supercomputing in an environment with a batch scheduler like [`SLURM`](https://en.wikipedia.org/wiki/Slurm_Workload_Manager) or [`PBS`](https://en.wikipedia.org/wiki/Portable_Batch_System).
 
-In many cases, you might prefer to bundle many small tasks together to achieve better throughput or a charging discount.  `METAQ` is designed to allow you to submit big bundled jobs easily, by creating a queue for your own work, that will run in a near-optimal way, wasting very little of your allocation.
+In many cases, you might prefer to bundle many small tasks together to achieve better throughput or a charging discount.  `METAQ` is designed to allow you to submit big bundled jobs easily, by creating a queue for your own work (tasks), that will run in a near-optimal way, wasting very little of your allocation.
 
 `METAQ` doesn't care about what the individual tasks are.  So, if you have multiple projects going at once, you can nevertheless use the same `METAQ` and the tasks will be queued and run side-by-side with no problem.
 
@@ -130,7 +130,7 @@ You may specify times in the format understood by `METAQ/x/seconds`, which conve
 Write the running log of this task to the specified path.  
 
 ####`#METAQ PROJECT some.string.you.want.for.accounting.purposes`
-METAQ doesn't worry about the task's project. However, it does log projects to `METAQ/jobs/${job_id}/resources`.  This is convenient if you have many comingled projects (or parts of projects) in the same `METAQ`.
+METAQ doesn't worry about the task's project. However, it does log projects to `METAQ/jobs/${METAQ_JOB_ID}/resources`.  This is convenient if you have many comingled projects (or parts of projects) in the same `METAQ`.
 
 It (probably) makes sense to have the string prefixed in order of generality (most specific detail last).
 
@@ -260,5 +260,5 @@ As it stands, this is totally unimplemented.
 
 The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
 
-Jobs in the `METAQ/priority` folder are only preferred at the beginning of a job.
+Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
 
