@@ -34,7 +34,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
   - [NODES](#metaq-nodes-n)
   - [GPUS](#metaq-gpus-g)
   - [LOG](#metaq-log-absolutepathtologfile)
-  - [PROJECT](#metaq-project-some.string.you.want.for.accounting.purposes)
+  - [PROJECT](#metaq-project-somestringyouwantforaccountingpurposes)
   - [MACHINE](#metaq-machine-machine)
 - [Job Script Structure](#job-script-structure)
 - [Miscellaneous](#miscellaneous)
