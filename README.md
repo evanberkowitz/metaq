@@ -33,14 +33,14 @@ Users also need to forumulate jobs script.  These scripts are what actually gets
 
 `METAQ/x/launch.sh` essentially evaluates these steps:
 ```
-    loop over all possible remaining tasks until there are none:
-        Check if you currently have enough resources (nodes, GPUs, clock time, etc.) to perform the task
-        If so, move it to the working directory, deduct those resources from what's available, and launch it!
-        Else, skip it!  
-            But, if it is impossible, don't count this job as "remaining".
-                Some examples of impossibility:
-                    The task needs more nodes than are allocated to this job.
-                    The remaining clock time isn't enough to complete the task.
+loop over all possible remaining tasks until there are none:
+    Check if you currently have enough resources (nodes, GPUs, clock time, etc.) to perform the task
+    If so, move it to the working directory, deduct those resources from what's available, and launch it!
+    Else, skip it!  
+        But, if it is impossible, don't count this job as "remaining".
+            Some examples of impossibility:
+                The task needs more nodes than are allocated to this job.
+                The remaining clock time isn't enough to complete the task.
 ```
 
 `METAQ/x/launch.sh` logs the individual tasks separately in `METAQ/jobs/${METAQ_JOB_ID}/log/${task}.log` and tallies the available resources in `METAQ/jobs/${METAQ_JOB_ID}/resources`, where you can see which tasks got started when, and what resources they consumed.  My personal preference is to direct the output log of `METAQ/x/launch.sh` itself to `METAQ/jobs/${METAQ_JOB_ID}/log/` as well, but that is specified in the job script as an option to the batch scheduler.
