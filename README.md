@@ -210,15 +210,12 @@ So, to summarize: GPU is really a stand-in for a way to partition the physical n
 METAQ provides a number of small accessories to see what's going on.
 
 `x/status`
-
     Reports based on tasks' PROJECT flag what's in the priority, todo, and hold folders.
 
 `x/running`
-
     Reports the current status of jobs in the working folder.
 
 `x/reset`
-
     # WARNING WARNING WARNING
     #                           SERIOUSLY
     #                                       HANDLE WITH CARE!
