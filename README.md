@@ -115,27 +115,26 @@ So, in the above example, you see
 
 What FLAGs are understood by METAQ and what do they mean?
 
-`#METAQ NODES N`
-    This task requires N nodes.
-`#METAQ GPUS G`
-    This task requires G gpus.
-`#METAQ MIN_WC_TIME [[HH:]MM:]SS`
-                   HHhr
-                   MMmin
-    This task requires the job to still have HH:MM:SS available before starting.
-    This helps avoid having work that fails due to interruption.
-    You may specify times in the format understood by METAQ/x/seconds, which converts the passed string into a number of seconds.
+####`#METAQ NODES N`
+This task requires N nodes.
+####`#METAQ GPUS G`
+This task requires G gpus.
+####`#METAQ MIN_WC_TIME [[HH:]MM:]SS`
+This task requires the job to still have HH:MM:SS available before starting.
+
+This helps avoid having work that fails due to interruption.
+
+You may specify times in the format understood by `x/seconds`, which converts the passed string into a number of seconds.
     
-`#METAQ LOG /absolute/path/to/log/file`
+####`#METAQ LOG /absolute/path/to/log/file`
     Write the running log of this task to the specified path.  
-`#METAQ PROJECT some.string.you.want.for.accounting.purposes`
-    METAQ doesn't worry about the task's project.
-    However, it does log projects to jobs/${job_id}/resources.
-    This is convenient if you have many comingled projects (or parts of projects) in the same METAQ.
-`#METAQ MACHINE machine`
-    This currently doesn't do anything.
-    The intention is:
-    If multiple machines can see the same METAQ but, for example, have different hardware (and thus incompatible binaries) you can nevertheless keep the todo folder comingled.
+####`#METAQ PROJECT some.string.you.want.for.accounting.purposes`
+METAQ doesn't worry about the task's project. However, it does log projects to `jobs/${job_id}/resources`.  This is convenient if you have many comingled projects (or parts of projects) in the same METAQ.
+
+####`#METAQ MACHINE machine`
+This currently doesn't do anything.
+
+The intention is: If multiple machines can see the same METAQ but, for example, have different hardware (and thus incompatible binaries) you can nevertheless keep the todo folder comingled.
 
 # JOB SCRIPT STRUCTURE
 
