@@ -38,6 +38,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 - [Reports](#reports)
 - [Installation](#installation)
 - [Known Bugs and Complaints](#known-bugs-and-complaints)
+- [License](#license)
 
 # BASIC INTRODUCTION
 
