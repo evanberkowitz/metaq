@@ -25,11 +25,19 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 
 #Table of Contents
 
-- METAQ
+- [METAQ](#metaq)
 - [Quick Summary](#quick-summary)
-- Table of Contents
-- ...
+- [Table of Contents](#table-of-contents)
+- [Basic Introduction](#basic-introduction)
+- [Task Script Structure](#task-script-structure)
+- [METAQ Flags](#metaq-flags)
+- [Job Script Structure](#job-script-structure)
 - [Miscellaneous](#miscellaneous)
+- [METAQ Monitoring](#metaq-monitoring)
+  - [Interacting With The Batch Scheduler](#interacting-with-the-batch-scheduler)
+- [Reports](#reports)
+- [Installation](#installation)
+- [Known Bugs and Complaints](#known-bugs-and-complaints)
 
 # BASIC INTRODUCTION
 
@@ -281,7 +289,7 @@ Job scripts have some `/full/path/to/metaq`s that need to actually point to the 
 
 
 
-# KNOWN BUGS / COMPLAINTS
+# KNOWN BUGS AND COMPLAINTS
 
 The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
 
