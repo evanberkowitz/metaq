@@ -29,6 +29,8 @@ METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run ou
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
 METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but it could in the future!
                                 # Would interact with METAQ MACHINE flag.
+METAQ_VERBOSITY=2               # How much detail do you want to see?
+                                # Levels of detail are offset by tabbing 4 spaces.
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.
