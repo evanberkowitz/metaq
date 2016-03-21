@@ -265,10 +265,11 @@ Simply `git clone` into any directory that is readable and writable from the sup
 You can perform a bare-bones test from the `METAQ` directory by running `x/demo.sh`.
 
 Job scripts have some `/full/path/to/metaq`s that need to actually point to the `METAQ` directory.  Some accessories also point to the METAQ directory and need a simple path substitution:
-    [ ] x/report
-    [ ] x/reset
-    [ ] x/running
-    [ ] x/status
+
+- [ ] x/report
+- [ ] x/reset
+- [ ] x/running
+- [ ] x/status
 
 
 
