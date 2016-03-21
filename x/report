@@ -1,0 +1,26 @@
+#!/bin/bash
+
+METAQ=/ccs/proj/lgt100/c51/x_files/project_2/q
+METAQ_X=${METAQ}/x
+METAQ_LIB=${METAQ_X}/metaq_lib.sh
+METAQ_VERBOSITY=3
+
+if [[ ! -f ${METAQ_LIB} ]]; then
+    echo "METAQ library is missing from ${METAQ_LIB}"
+    exit
+fi
+
+source ${METAQ_LIB}
+
+
+all="$(cat $METAQ_JOBS/*/resources | grep -i released | grep -i 'for project' | grep -i "node" | awk '{print $8, $1*$12}')"
+
+banner=true
+for proj in $(echo "$all" | awk '{print $1}' | sort | uniq); do
+    if $banner; then
+        banner=false;
+        echo "PROJ COUNT TOTAL MEAN MIN MAX"
+    fi
+    P=$(echo "$all" | grep $proj)
+    echo "$proj $(echo "$P" | awk '{if(min=="")min=max=$2}; {if($2>max) {max=$2}; if($2< min) {min=$2}; total+=$2; count+=1} END {print count, total/3600, total/count/3600, min/3600, max/3600}')" 
+done | column -t 

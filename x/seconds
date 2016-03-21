@@ -1,0 +1,45 @@
+#!  /bin/bash
+
+# convert hh:mm:ss format to seconds
+t=$1
+
+[ -z "$t" ] && echo "usage - $0 ( [[hh:]mm:]ss | h'hr' | m'min')" >&2 && exit 86
+
+case $t in
+  *d    ) seconds=$[86400*${t%d}];;
+  *hr   ) seconds=$[3600*${t%hr}];;
+  *min  ) seconds=$[60*${t%min}];;
+  *:*   )
+          s=0
+          m=0
+          h=0
+          d=0
+          
+          f=${t##*.}
+          if [[ "$f" == "$t" ]]; then f="";
+          else f=".$f"; t=${t%$f}; fi
+
+          s=${t##*:}
+          t=${t%$s}
+          t=${t%:}
+          m=${t##*:}
+          t=${t%$m}
+          t=${t%:}
+          h=${t##*-}
+          d=${t%-*}
+          #t=${t%:}
+          if [[ "$d" == "$h" ]]; then d=00; fi
+
+          [ "$m" ] || m=00
+          [ "$h" ] || h=00
+          [ "$d" ] || d=00
+
+          #echo d $d h $h m $m s $s
+
+          seconds=$[86400*${d} + 3600*${h} + 60*${m} + ${s}]$f;;
+  *     ) seconds=$t;;
+esac
+
+echo "$seconds"
+
+

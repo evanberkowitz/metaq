@@ -1,0 +1,33 @@
+#!/bin/bash
+
+METAQ=/ccs/proj/lgt100/c51/x_files/project_2/q
+METAQ_X=${METAQ}/x
+METAQ_LIB=${METAQ_X}/metaq_lib.sh
+METAQ_VERBOSITY=3
+
+if [[ ! -f ${METAQ_LIB} ]]; then
+    echo "METAQ library is missing from ${METAQ_LIB}"
+    exit
+fi
+
+source ${METAQ_LIB}
+
+###
+### CHECK JOBS AND RESET
+###
+
+for job in ${METAQ_WORKING_BASE}/*; do
+    if [[ "${job}" == "${METAQ_WORKING_BASE}/*" ]]; then
+        echo "No jobs to consider."
+        continue
+    fi
+    job_id=${job##*/}
+    if [[ ! -z "$(METAQ_JOB_RUNNING $job_id)" ]] ; then
+        METAQ_PRINT 0 "Job ${job_id}"
+        for task in ${job}/*; do
+            METAQ_PRINT 1 "${task}"
+        done
+    else
+        METAQ_PRINT 0 "Job ${job_id} has been abandoned."
+    fi
+done

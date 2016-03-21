@@ -1,0 +1,20 @@
+#!/bin/bash
+
+METAQ=/ccs/proj/lgt100/c51/x_files/project_2/q
+METAQ_X=${METAQ}/x
+METAQ_LIB=${METAQ_X}/metaq_lib.sh
+METAQ_VERBOSITY=3
+
+if [[ ! -f ${METAQ_LIB} ]]; then
+    echo "METAQ library is missing from ${METAQ_LIB}"
+    exit
+fi
+
+source ${METAQ_LIB}
+
+for folder in {${METAQ_PRIORITY},${METAQ_UNFINISHED},${METAQ_HOLD}}; do
+    echo "$folder"
+    for task in $folder/*; do
+        METAQ_TASK_PROJECT $task
+    done | sort | uniq -c | sort -k1,1n
+done

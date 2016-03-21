@@ -1,0 +1,56 @@
+#!  /bin/bash
+
+# convert seconds to d-hh:mm:ss format.
+t=$1
+
+frac=${t##*.}
+t=${t%.*}
+
+if [[ "$frac" == "$t" ]]; then
+    frac=""
+fi
+
+
+span=""
+days=$[t/86400]
+if [[ "$days" -gt 0 ]]; then
+  span+="$days-";
+fi
+
+t=$[t%86400]
+
+hours=$[t/3600]
+if [[ -z "$span" ]] && [[ "$hours" -gt 0 ]]; then
+   span+="$hours:"
+elif [[ ! -z "$span" ]]; then
+   hours="00$hours"
+   span+="${hours:(-2)}:"
+fi
+t=$[t%3600]
+
+minutes=$[t/60]
+if [[ -z "$span" ]] && [[ "$minutes" -gt 0 ]]; then
+    span+="$minutes:"
+elif [[ ! -z "$span" ]]; then
+    minutes="00$minutes"
+    span+="${minutes:(-2)}:"
+fi
+t=$[t%60]
+
+seconds=$t
+if [[ -z "$span" ]]; then
+    span+="$seconds"
+elif [[ ! -z "$span" ]]; then
+    seconds="00$seconds";
+    span+="${seconds:(-2)}"
+fi
+
+if [[  -z "$span" ]]; then
+    span+="0.$frac"
+elif [[ ! -z "$frac" ]]; then
+    span+=".${frac}"
+fi
+
+
+echo $span
+
