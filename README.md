@@ -1,6 +1,6 @@
 # METAQ
 
-`METAQ` (pronounced "meta-queue") is a system for bundling jobs for supercomputing in an environment with a batch scheduler like `SLURM` or `PBS`.
+`METAQ` (pronounced "meta-queue") is a system for bundling jobs for supercomputing in an environment with a batch scheduler like [`SLURM`](https://en.wikipedia.org/wiki/Slurm_Workload_Manager) or [`PBS`](https://en.wikipedia.org/wiki/Portable_Batch_System).
 
 In many cases, you might prefer to bundle many small tasks together to achieve better throughput or a charging discount.  `METAQ` is designed to allow you to submit big bundled jobs easily, by creating a queue for your own work, that will run in a near-optimal way, wasting very little of your allocation.
 
@@ -261,3 +261,4 @@ As it stands, this is totally unimplemented.
 The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
 
 Jobs in the `METAQ/priority` folder are only preferred at the beginning of a job.
+
