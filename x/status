@@ -1,6 +1,6 @@
 #!/bin/bash
 
-METAQ=/ccs/proj/lgt100/c51/x_files/project_2/q
+METAQ=/full/path/to/metaq
 METAQ_X=${METAQ}/x
 METAQ_LIB=${METAQ_X}/metaq_lib.sh
 METAQ_VERBOSITY=3

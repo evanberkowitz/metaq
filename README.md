@@ -258,6 +258,20 @@ function METAQ_JOB_RUNNING {
 Because it tabulates consumed resources and keeps track of the associated task files, I hope to be able to generate some smart reports.
 As it stands, this is totally unimplemented.
 
+# INSTALLATION
+
+Simply `git clone` into any directory that is readable and writable from the supercomputing nodes.
+
+You can perform a bare-bones test from the `METAQ` directory by running `x/demo.sh`.
+
+Job scripts have some `/full/path/to/metaq`s that need to actually point to the `METAQ` directory.  Some accessories also point to the METAQ directory and need a simple path substitution:
+    [ ] x/report
+    [ ] x/reset
+    [ ] x/running
+    [ ] x/status
+
+
+
 # KNOWN BUGS / COMPLAINTS
 
 The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
