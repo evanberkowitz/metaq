@@ -12,8 +12,11 @@ function rand {
     echo "${RANDOM}" | awk -v m=$mod '{print 1+$1%m}'
 }
 
-mkdir todo_demo
-if ! ls todo/* >/dev/null 2>/dev/null; then
+mkdir -p todo working finished jobs log priority hold
+
+if ! ls todo/* 2>/dev/null; then
+    echo "Your todo folder is empty, which is good for demonstration purposes."
+else
     echo "You have things in your todo folder."
     echo "Demo is aborting."
     exit
