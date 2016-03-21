@@ -53,6 +53,12 @@ fi
 if [[ -z "$METAQ_SIMULTANEOUS_TASKS" ]]; then
     METAQ_SIMULTANEOUS_TASKS=1048576
 fi
+if [[ -z "$METAQ_MIN_NODES" ]]; then
+    METAQ_MIN_NODES=${METAQ_NODES}
+fi
+if [[ -z "$METAQ_MIN_GPUS" ]]; then
+    METAQ_MIN_GPUS=${METAQ_GPUS}
+fi
 
 
 ############################
@@ -147,6 +153,16 @@ function METAQ_ATTEMPT_TASK {
     if [[ ${METAQ_TASK_GPUS_REQUIRED} -gt ${METAQ_GPUS_AVAILABLE} ]]; then
         METAQ_PRINT 4 "Not enough gpus available."
         METAQ_ATTEMPT_RESULT="GPUS"
+        return
+    fi
+    if [[ ${METAQ_MIN_NODES} -gt ${METQ_TASK_NODES_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too few nodes (${METQ_TASK_NODES_REQUIRED}) for current consideration (${METAQ_MIN_NODES})."
+        METAQ_ATTEMPT_RESULT="MIN_NODES"
+        return
+    fi
+    if [[ ${METAQ_MIN_GPUS} -gt ${METQ_TASK_GPUS_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too few GPUs (${METQ_TASK_GPUS_REQUIRED}) for current consideration (${METAQ_MIN_GPUS})."
+        METAQ_ATTEMPT_RESULT="MIN_GPUS"
         return
     fi
     
