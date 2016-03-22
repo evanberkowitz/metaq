@@ -291,7 +291,9 @@ As it stands, this is totally unimplemented.
 
 Simply `git clone` into any directory that is readable and writable from the supercomputing nodes.
 
-`cd` into that directory and run `x/install`.  It will ask you for the full path to the directory you are in and what batch scheduler you are using.
+`cd` into that directory and run `x/install`.  It will ask you for the full path to the directory you are in and what batch scheduler you are using.  It will provide (hopefully) intelligent defaults.
+
+You should rerun `x/install` after ever `git pull`.
 
 You can perform a bare-bones test from the `METAQ` directory by running `x/demo.sh`.
 
