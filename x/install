@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function METAQ_INSTALL_PROMPT () {
+    prompt=$1
+    default=$2
+    read -p "$prompt  [$default]:    " IN
+    if [[ -z "$IN" ]]; then
+        echo "$default";
+    else
+        echo "$IN";
+    fi
+}
+
+METAQ=$(METAQ_INSTALL_PROMPT "/Users/berkowitz2/src/metaq" $(pwd -P))
+
+BATCH=$(ls -l ${METAQ}/x/batch.sh 2>/dev/null | awk '{print $11}' | tr -d ' \n' )
+BATCH=${BATCH##*/}
+BATCH=${BATCH%.sh}
+
+BATCH=$(METAQ_INSTALL_PROMPT "batch scheduler (SLURM,PBS,...)" "${BATCH}")
+
+for script in x/*; do
+    sed -i ".sed_in_place_edit" -e "s|/Users/berkowitz2/src/metaq|${METAQ}|g" $script
+done
+rm x/*.sed_in_place_edit
+
+BATCH=$(echo "$BATCH" | tr '[:upper:]' '[:lower:]')
+if [[ -z "$BATCH" ]]; then
+    rm ${METAQ}/x/batch.sh 2>/dev/null
+    echo "Using no_batch_scheduler"
+    ln -s ${METAQ}/x/no_batch_scheduler.sh ${METAQ}/x/batch.sh
+elif [[ ! -f ${METAQ}/x/${BATCH}.sh ]]; then
+    echo "No known batch scheduler file at ${METAQ}/x/$BATCH.sh"
+else
+    rm ${METAQ}/x/batch.sh 2>/dev/null
+    echo "Linking batch scheduler into ${METAQ}/x/batch.sh"
+    ln -s ${METAQ}/x/${BATCH}.sh ${METAQ}/x/batch.sh
+fi

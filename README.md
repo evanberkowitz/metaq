@@ -291,9 +291,11 @@ As it stands, this is totally unimplemented.
 
 Simply `git clone` into any directory that is readable and writable from the supercomputing nodes.
 
+`cd` into that directory and run `x/install`.  It will ask you for the full path to the directory you are in and what batch scheduler you are using.
+
 You can perform a bare-bones test from the `METAQ` directory by running `x/demo.sh`.
 
-Job scripts have some `/full/path/to/metaq`s that need to actually point to the `METAQ` directory.  Some accessories also point to the METAQ directory and need a simple path substitution:
+Job scripts have some `/full/path/to/metaq`s that need to actually point to the `METAQ` directory.  This substitution is made by the x/install script.  But, you could do it manually too.  Some accessories also point to the METAQ directory and need a simple path substitution:
 
 - [ ] x/report
 - [ ] x/reset
