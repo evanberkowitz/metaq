@@ -120,7 +120,7 @@ function METAQ_ATTEMPT_TASK {
     METAQ_TASK_TIME_REQUIRED=$(METAQ_TASK_CLOCK_REQUIREMENT $METAQ_TASK_FULL)
     METAQ_PRINT 3 "Time estimate:  $METAQ_TASK_TIME_REQUIRED"
     METAQ_PRINT 3 "Time remaining: $($METAQ_X/timespan $(METAQ_TIME_REMAINING) 2>/dev/null)"
-    if [[ "$(METAQ_TIME_REMAINING)" -lt "$($METAQ_X/seconds $METAQ_TASK_TIME_REQUIRED)" ]]; then
+    if [[ "$(METAQ_TIME_REMAINING)" -lt "$($METAQ_X/seconds $METAQ_TASK_TIME_REQUIRED 2>/dev/null)" ]]; then
         METAQ_PRINT 3 "Probably not enough time remaining."
         METAQ_ATTEMPT_RESULT="CLOCK"
         return
