@@ -53,11 +53,12 @@ fi
 if [[ -z "$METAQ_SIMULTANEOUS_TASKS" ]]; then
     METAQ_SIMULTANEOUS_TASKS=1048576
 fi
+
 if [[ -z "$METAQ_MIN_NODES" ]]; then
-    METAQ_MIN_NODES=${METAQ_NODES}
+    METAQ_MIN_NODES=0
 fi
 if [[ -z "$METAQ_MIN_GPUS" ]]; then
-    METAQ_MIN_GPUS=${METAQ_GPUS}
+    METAQ_MIN_GPUS=0
 fi
 
 
@@ -155,13 +156,13 @@ function METAQ_ATTEMPT_TASK {
         METAQ_ATTEMPT_RESULT="GPUS"
         return
     fi
-    if [[ ${METAQ_MIN_NODES} -gt ${METQ_TASK_NODES_REQUIRED} ]]; then
-        METAQ_PRINT 4 "Job uses too few nodes (${METQ_TASK_NODES_REQUIRED}) for current consideration (${METAQ_MIN_NODES})."
+    if [[ ${METAQ_MIN_NODES} -gt ${METAQ_TASK_NODES_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too few nodes (${METAQ_TASK_NODES_REQUIRED}) for current consideration (${METAQ_MIN_NODES})."
         METAQ_ATTEMPT_RESULT="MIN_NODES"
         return
     fi
-    if [[ ${METAQ_MIN_GPUS} -gt ${METQ_TASK_GPUS_REQUIRED} ]]; then
-        METAQ_PRINT 4 "Job uses too few GPUs (${METQ_TASK_GPUS_REQUIRED}) for current consideration (${METAQ_MIN_GPUS})."
+    if [[ ${METAQ_MIN_GPUS} -gt ${METAQ_TASK_GPUS_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too few GPUs (${METAQ_TASK_GPUS_REQUIRED}) for current consideration (${METAQ_MIN_GPUS})."
         METAQ_ATTEMPT_RESULT="MIN_GPUS"
         return
     fi
@@ -238,6 +239,7 @@ METAQ_PRINT 0 "Launching tasks."
 METAQ_LOOP_TASKS_REMAIN=true
 while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     METAQ_LOOP_TASKS_REMAIN=false
+    METAQ_LAUNCH_SUCCESS=false
 
     METAQ_PRINT 0 "+----------------------------------------------------------------------------------+"
     
@@ -256,7 +258,10 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
                 METAQ_PRINT 1 $i;
                 METAQ_ATTEMPT_TASK $i
                 METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT}"
-                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") ]]; then
+                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED") ]]; then
+                    METAQ_LAUNCH_SUCCESS=true
+                fi
+                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") && (! "${METAQ_ATTEMPT_RESULT}" =~ "MIN_"*) ]]; then
                     METAQ_LOOP_TASKS_REMAIN=true
                 fi
                 sleep 1 #so that launched subprocesses have time to start.
@@ -276,6 +281,13 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     if $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; then
         METAQ_PRINT 0 "Sleeping $METAQ_SLEEPY_TIME seconds."
         sleep $METAQ_SLEEPY_TIME
+    elif [[ (! ${METAQ_LAUNCH_SUCCESS} ) || ("${METAQ_MIN_NODES}" -gt 1) || ("${METAQ_MIN_NODES}" -gt 1) ]] ; then
+        METAQ_LOOP_TASKS_REMAIN=true
+        METAQ_MIN_NODES=$[ METAQ_MIN_NODES / 2 ]
+        METAQ_MIN_GPUS=$[ METAQ_MIN_NODES / 2 ]
+        METAQ_PRINT 0 "Minimum task size requirements may have been too big."
+        METAQ_PRINT 1 "New minimum node requirement ${METAQ_MIN_NODES} NODES"
+        METAQ_PRINT 1 "New minimum gpu  requirement ${METAQ_MIN_GPUS} GPUS"
     fi
 done
 

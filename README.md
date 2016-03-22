@@ -204,6 +204,10 @@ METAQ_VERBOSITY=2               # How much detail do you want to see?
 METAQ_SIMULTANEOUS_TASKS=1048576 # An integer that limits how many tasks can run concurrently.
                                  # Some environments limit how many simultaneous tasks you can submit.  For example,
                                  # [on Titan, users are artificially limited to 100 simultaneous aprun processes](https://www.olcf.ornl.gov/kb_articles/using-the-aprun-command/).
+METAQ_MIN_NODES=0               # Integers that puts a lower size limit on jobs.
+METAQ_MIN_GPUS=0                # If the main loop decides that there were no possible jobs, it will halve these minimal
+                                # values and loop again.  It will only concede that there are truly no possible jobs when
+                                # these minimal values are <= 1.
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.

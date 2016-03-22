@@ -48,5 +48,6 @@ METAQ_NODES=16  # It's a lie!
 METAQ_GPUS=32   # It's a lie!
 METAQ_SIMULTANEOUS_TASKS=4
 METAQ_RUN_TIME=300
+METAQ_VERBOSITY=5
 
 source x/launch.sh
