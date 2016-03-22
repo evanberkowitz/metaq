@@ -9,6 +9,8 @@
 #MSUB -j oe
 #MSUB -N metaq.llnl
 
+# LLNL clusters use a combination of MOAB and SLURM.  This run script is for that kind of environment.
+
 # REQUIRED USER-SPECIFIED OPTIONS
 
 METAQ=/full/path/to/metaq       # Specifies the full path to the metaq folder itself.
