@@ -206,6 +206,8 @@ function METAQ_ATTEMPT_TASK {
             
             # First, move the task to the finished folder
             mv $METAQ_WORKING/$METAQ_TASK $METAQ_FINISHED 2>/dev/null
+            # Touch the file to update the time stamp
+            touch $METAQ_FINISHED/$METAQ_TASK
             
             # Figure out how much time you spent:
             METAQ_TASK_END=$(date "+%s")
