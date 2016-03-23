@@ -1,6 +1,6 @@
 #!/bin/bash
 
-METAQ=/full/path/to/metaq
+METAQ=$( cd $(dirname $0)/.. ; pwd -P )
 METAQ_X=${METAQ}/x
 METAQ_LIB=${METAQ_X}/metaq_lib.sh
 METAQ_VERBOSITY=3
