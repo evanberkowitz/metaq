@@ -26,6 +26,26 @@ METAQ_WORKING_BASE=${METAQ}/working
 mkdir -p ${METAQ_UNFINISHED} ${METAQ_PRIORITY} ${METAQ_HOLD} ${METAQ_FINISHED} ${METAQ_JOBS} ${METAQ_WORKING_BASE} 2>/dev/null
 
 ############################
+############################ ACCESSORIES
+############################
+
+function METAQ_READLINK {
+    METAQ_RL_FILE=$1
+
+    cd `dirname $METAQ_RL_FILE`
+    METAQ_RL_FILE=`basename $METAQ_RL_FILE`
+
+    # Ascend
+    while [[ -L "$METAQ_RL_FILE" ]]; do
+        METAQ_RL_FILE=`readlink $METAQ_RL_FILE`
+        cd `dirname $METAQ_RL_FILE`
+        METAQ_RL_FILE=`basename $METAQ_RL_FILE`
+    done
+
+    echo $(pwd -P)/$METAQ_RL_FILE
+}
+
+############################
 ############################ FUNCTIONS THAT PARSE METAQ FLAGS
 ############################
 
@@ -90,9 +110,10 @@ function METAQ_TIME_REMAINING {
 ############################ READ BATCH SCHEDULER FILE
 ############################
 
-if [[ ! -f $(readlink -f ${METAQ_X}/batch.sh) ]]; then
+if [[ ! -f $(METAQ_READLINK ${METAQ_X}/batch.sh) ]]; then
     echo "${METAQ_X}/batch.sh does not point to a batch scheduler file."
     METAQ_BATCH_SCHEDULER=NONE
 else
-    source $(readlink -f ${METAQ_X}/batch.sh)
+    source $(METAQ_READLINK ${METAQ_X}/batch.sh)
 fi
+
