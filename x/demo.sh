@@ -28,6 +28,7 @@ for t in {0..7}; do
 #METAQ NODES $(rand 5)
 #METAQ GPUS $(rand 8)
 #METAQ MIN_WC_TIME $(rand 150)
+#METAQ PROJECT metaq.demo
 
 echo \"working hard...\"
 sleep $(rand 40)            # The 'hard work' is a sham!

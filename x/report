@@ -12,15 +12,46 @@ fi
 
 source ${METAQ_LIB}
 
+epoch="1970-01-01T00:00"
+if [[ -z "$1" ]]; then
+    earliest=$epoch
+else
+    earliest=$1;
+fi
 
-all="$(cat $METAQ_JOBS/*/resources | grep -i released | grep -i 'for project' | grep -i "node" | awk '{print $8, $1*$12}')"
+# As in http://stackoverflow.com/a/8748344/2966190 :
+if date -d $earliest >/dev/null 2>&1 ; then
+    METAQ_PRINT 5 "Using GNU date, so it does understand the -d DATESTRING option."
+    node="$(find -H ${METAQ}/jobs -path '*/resources' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
+    gpu="$( find -H ${METAQ}/jobs -path '*/resources' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
+else
+    METAQ_PRINT 5 "Not using GNU date, so it doesn't understand the -d DATESTRING option."
+    node="$(find -H ${METAQ}/jobs -path '*/resources' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
+    gpu="$( find -H ${METAQ}/jobs -path '*/resources' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
+fi
+
 
 banner=true
-for proj in $(echo "$all" | awk '{print $1}' | sort | uniq); do
+for proj in $(echo -e "$node\n$gpu" | awk '{print $1}' | sort | uniq); do
     if $banner; then
         banner=false;
-        echo "PROJ COUNT TOTAL MEAN MIN MAX"
+        echo "PROJ RESOURCE COUNT TOTAL MEAN MIN MAX"
     fi
-    P=$(echo "$all" | grep $proj)
-    echo "$proj $(echo "$P" | awk '{if(min=="")min=max=$2}; {if($2>max) {max=$2}; if($2< min) {min=$2}; total+=$2; count+=1} END {print count, total/3600, total/count/3600, min/3600, max/3600}')" 
+
+    # Pull only the lines for a given project,
+    N=$(echo "$node" | grep "$proj ")
+    G=$(echo "$gpu"  | grep "$proj ")
+    
+    # do some simple analysis
+    NStats=$(echo "$N" | awk '{if(min=="")min=max=$2}; {if($2>max) {max=$2}; if($2< min) {min=$2}; total+=$2; count+=1} END {print count, total/3600, total/count/3600, min/3600, max/3600}');
+    GStats=$(echo "$G" | awk '{if(min=="")min=max=$2}; {if($2>max) {max=$2}; if($2< min) {min=$2}; total+=$2; count+=1} END {print count, total/3600, total/count/3600, min/3600, max/3600}');
+
+    # and print prettily.
+    if [[ "0" != $(echo "$NStats" | awk '{print $2}') ]]; then
+        echo "$proj node-hrs $NStats"
+    fi
+    if [[ "0" != $(echo "$GStats" | awk '{print $2}') ]]; then
+        echo "$proj gpu-hrs $GStats"
+    fi
+
 done | column -t 
