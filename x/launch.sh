@@ -253,7 +253,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     
     for METAQ_REMAINING in {$METAQ_PRIORITY,$METAQ_UNFINISHED}; do
         METAQ_PRINT 0 "Looping over work in ${METAQ_REMAINING}"
-        for i in $METAQ_REMAINING/*; do
+        for i in $(find $METAQ_REMAINING -type f | sort); do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
             while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
                 METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) encountered."
