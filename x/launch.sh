@@ -116,6 +116,12 @@ function METAQ_ATTEMPT_TASK {
     METAQ_TASK=${METAQ_TASK_FULL##*/}
     METAQ_ATTEMPT_RESULT=""
 
+    if [[ ! -f ${METAQ_TASK_FULL} ]]; then
+        #If the task file is gone, some other job snagged the task before you could get to it.
+        METAQ_ATTEMPT_RESULT="STOLEN"
+        return
+    fi
+
     # If there isn't enough time remaining, skip.
     METAQ_TASK_TIME_REQUIRED=$(METAQ_TASK_CLOCK_REQUIREMENT $METAQ_TASK_FULL)
     METAQ_PRINT 3 "Time estimate:  $METAQ_TASK_TIME_REQUIRED"
