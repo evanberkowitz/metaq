@@ -11,18 +11,11 @@ function METAQ_INSTALL_PROMPT () {
     fi
 }
 
-METAQ=$(METAQ_INSTALL_PROMPT "/Users/berkowitz2/src/metaq" $(pwd -P))
-
 BATCH=$(ls -l ${METAQ}/x/batch.sh 2>/dev/null | awk '{print $11}' | tr -d ' \n' )
 BATCH=${BATCH##*/}
 BATCH=${BATCH%.sh}
 
 BATCH=$(METAQ_INSTALL_PROMPT "batch scheduler (SLURM,PBS,...)" "${BATCH}")
-
-for script in x/*; do
-    sed -i ".sed_in_place_edit" -e "s|/Users/berkowitz2/src/metaq|${METAQ}|g" $script
-done
-rm x/*.sed_in_place_edit
 
 BATCH=$(echo "$BATCH" | tr '[:upper:]' '[:lower:]')
 if [[ -z "$BATCH" ]]; then
