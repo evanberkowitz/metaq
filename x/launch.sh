@@ -41,6 +41,10 @@ fi
 if [[ -z "$METAQ_SLEEPY_TIME" ]]; then
     METAQ_SLEEPY_TIME=3 #seconds
 fi
+if [[ -z "$METAQ_SLEEPY_TIME_TASK_SATURATION" ]]; then
+    METAQ_SLEEPY_TIME_TASK_SATURATION=10 #seconds
+fi
+
 if [[ -z "$METAQ_VERBOSITY" ]]; then
     METAQ_VERBOSITY=2
 fi
@@ -61,6 +65,13 @@ if [[ -z "$METAQ_MIN_GPUS" ]]; then
     METAQ_MIN_GPUS=0
 fi
 
+if [[ -z "$METAQ_MAX_NODES" ]]; then
+    METAQ_MAX_NODES=METAQ_NODES;
+fi
+if [[ -z "$METAQ_MAX_GPUS" ]]; then
+    METAQ_MAX_GPUS=METAQ_GPUS;
+fi
+
 
 ############################
 ############################ GET METAQ LIBRARY
@@ -72,6 +83,25 @@ if [[ ! -f "${METAQ_X}/metaq_lib.sh" ]]; then
 fi
 
 source ${METAQ_X}/metaq_lib.sh
+
+############################
+############################ CHECK OPTION CONSISTENCY
+############################
+
+if [[ "$METAQ_MAX_NODES" < "$METAQ_MIN_NODES" ]]; then
+    METAQ_PRINT 0 "You specified inconsistent task requirements:"
+    METAQ_PRINT 1 "You mandated the  largest task be ${METAQ_MAX_NODES} nodes"
+    METAQ_PRINT 1 "         but the smallest task be ${METAQ_MIN_NODES} nodes"
+    METAQ_PRINT 0 "Exiting."
+    exit
+fi
+if [[ "$METAQ_MAX_GPUS" < "$METAQ_MIN_GPUS" ]]; then
+    METAQ_PRINT 0 "You specified inconsistent task requirements:"
+    METAQ_PRINT 1 "You mandated the  largest task be ${METAQ_MAX_GPUS} GPUs"
+    METAQ_PRINT 1 "         but the smallest task be ${METAQ_MIN_GPUS} GPUs"
+    METAQ_PRINT 0 "Exiting."
+    exit
+fi
 
 ############################
 ############################ JOB SETUP
@@ -172,6 +202,16 @@ function METAQ_ATTEMPT_TASK {
         METAQ_ATTEMPT_RESULT="MIN_GPUS"
         return
     fi
+    if [[ ${METAQ_MAX_NODES} -lt ${METAQ_TASK_NODES_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too many nodes (${METAQ_TASK_NODES_REQUIRED}) for current consideration (${METAQ_MAX_NODES})."
+        METAQ_ATTEMPT_RESULT="MAX_NODES"
+        return
+    fi
+    if [[ ${METAQ_MAX_GPUS} -lt ${METAQ_TASK_GPUS_REQUIRED} ]]; then
+        METAQ_PRINT 4 "Job uses too many GPUs (${METAQ_TASK_GPUS_REQUIRED}) for current consideration (${METAQ_MAX_GPUS})."
+        METAQ_ATTEMPT_RESULT="MAX_GPUS"
+        return
+    fi
     
     # Make sure you log the task to the requested location.
     METAQ_TASK_LOG=$(METAQ_TASK_LOG_FILE $METAQ_TASK_FULL)
@@ -256,20 +296,20 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
         for i in $(find $METAQ_REMAINING -type f | sort); do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
             while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
-                METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) encountered."
+                METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) saturated."
                 METAQ_PRINT 2 "$($METAQ_X/timespan $(METAQ_TIME_REMAINING)) remains on the wall clock."
                 METAQ_PRINT 2 "$(METAQ_AVAILABLE_NODES) nodes will sit idle until task completion."
                 METAQ_PRINT 2 "$(METAQ_AVAILABLE_GPUS) gpus will sit idle until task completion."
-                sleep 10
+                sleep ${METAQ_SLEEPY_TIME_TASK_SATURATION}
             done
             if [[ ! $i == "$METAQ_REMAINING/*" ]]; then
                 METAQ_PRINT 1 $i;
                 METAQ_ATTEMPT_TASK $i
                 METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT}"
-                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED") ]]; then
+                if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
                     METAQ_LAUNCH_SUCCESS=true
                 fi
-                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") && (! "${METAQ_ATTEMPT_RESULT}" =~ "MIN_"*) ]]; then
+                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") ]]; then
                     METAQ_LOOP_TASKS_REMAIN=true
                 fi
                 sleep 1 #so that launched subprocesses have time to start.
@@ -283,20 +323,44 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
         echo "Launched maximum number of tasks: ${METAQ_LAUNCHES}."
         break; 
     fi
+    
     METAQ_PRINT 0 ""
     METAQ_PRINT 0 ""
     METAQ_PRINT 0 "Tried to launch all available work."
+
+    if (! ${METAQ_LAUNCH_SUCCESS} ) && $METAQ_LOOP_TASKS_REMAIN ; then
+        METAQ_PRINT 0 "No tasks were launched on the last pass."
+        if [[ ${METAQ_MIN_NODES} -gt 0 ]]; then
+            METAQ_MIN_NODES=$[ METAQ_MIN_NODES / 2 ]
+        fi
+        if [[ ${METAQ_MIN_GPUS} -gt 0 ]]; then
+            METAQ_MIN_GPUS=$[ METAQ_MIN_GPUS / 2 ]
+        fi
+        if [[ $METAQ_MAX_NODES -lt $METAQ_NODES ]]; then
+            METAQ_MAX_NODES=$[ METAQ_MAX_NODES * 2 ]
+            if [[ $METAQ_MAX_NODES -gt $METAQ_NODES ]]; then
+                $METAQ_MAX_NODES=$METAQ_NODES
+            fi
+        fi
+        if [[ $METAQ_MAX_GPUS -lt $METAQ_GPUS ]]; then
+            METAQ_MAX_GPUS=$[ METAQ_MAX_GPUS * 2 ]
+            if [[ $METAQ_MAX_GPUS -gt $METAQ_GPUS ]]; then
+                $METAQ_MAX_GPUS=$METAQ_GPUS
+            fi
+        fi
+
+        METAQ_PRINT 0 "Minimum task size requirements may have been too big."
+        METAQ_PRINT 1 "New minimum node requirement: ${METAQ_MIN_NODES} NODES"
+        METAQ_PRINT 1 "New minimum gpu  requirement: ${METAQ_MIN_GPUS} GPUS"
+        METAQ_PRINT 0 "Maximum task size requirements may have been too small."
+        METAQ_PRINT 1 "New maximum node requirement: ${METAQ_MAX_NODES} NODES"
+        METAQ_PRINT 1 "New maximum gpu  requirement: ${METAQ_MAX_GPUS} GPUS"
+    fi;
+
     if $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; then
         METAQ_PRINT 0 "Sleeping $METAQ_SLEEPY_TIME seconds."
         sleep $METAQ_SLEEPY_TIME
-    elif [[ (! ${METAQ_LAUNCH_SUCCESS} ) || ("${METAQ_MIN_NODES}" -gt 1) || ("${METAQ_MIN_NODES}" -gt 1) ]] ; then
-        METAQ_LOOP_TASKS_REMAIN=true
-        METAQ_MIN_NODES=$[ METAQ_MIN_NODES / 2 ]
-        METAQ_MIN_GPUS=$[ METAQ_MIN_NODES / 2 ]
-        METAQ_PRINT 0 "Minimum task size requirements may have been too big."
-        METAQ_PRINT 1 "New minimum node requirement ${METAQ_MIN_NODES} NODES"
-        METAQ_PRINT 1 "New minimum gpu  requirement ${METAQ_MIN_GPUS} GPUS"
-    fi
+    fi 
 done
 
 METAQ_PRINT 0 "No more work remains.  Waiting for task completion."
