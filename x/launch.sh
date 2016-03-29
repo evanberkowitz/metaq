@@ -137,6 +137,27 @@ METAQ_PRINT 0 "We will launch at most ${METAQ_MAX_LAUNCHES} queued items."
 METAQ_LAUNCHES=0
 
 ############################
+############################ PREPARE FOR FAILURE
+############################
+
+_METAQ_INTERRUPT() {
+
+    echo ""
+    echo 
+    echo "METAQ IS INTERRUPTED"
+    echo $(date "+%Y-%m-%dT%H:%M:%S")
+    echo "KILLING DEPENDENT PROCESSES"
+    kill $(jobs -p)
+    echo "MOVING WORKING TASKS TO PRIORITY"
+    mv $METAQ_WORKING/* ${METAQ_PRIORITY} 2>/dev/null
+    echo "EXITING."
+    exit
+
+}
+
+trap _METAQ_INTERRUPT SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGTERM
+
+############################
 ############################ CAREFULLY TRY TO DO A GIVEN TASK
 ############################
 
