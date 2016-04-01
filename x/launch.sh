@@ -72,6 +72,16 @@ if [[ -z "$METAQ_MAX_GPUS" ]]; then
     METAQ_MAX_GPUS=METAQ_GPUS;
 fi
 
+if [[ "$METAQ_MAX_NODES" -gt "$METAQ_NODES" ]]; then
+    echo "You set METAQ_MAX_NODES to $METAQ_MAX_NODES which is more than this job's allocated METAQ_NODE count $METAQ_NODES."
+    echo "    For safety and sensibility this is automatically overridden, so that METAQ_MAX_NODES is $METAQ_NODES."
+    METAQ_MAX_NODES=$METAQ_NODES
+fi
+if [[ "$METAQ_MAX_GPUS" -gt "$METAQ_GPUS" ]]; then
+    echo "You set METAQ_MAX_GPUS to $METAQ_MAX_GPUS which is more than this job's allocated METAQ_GPU count $METAQ_GPUS."
+    echo "    For safety and sensibility this is automatically overridden, so that METAQ_MAX_GPUS is $METAQ_GPUS."
+    METAQ_MAX_GPUS=$METAQ_GPUS
+fi
 
 ############################
 ############################ GET METAQ LIBRARY
