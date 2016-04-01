@@ -225,7 +225,7 @@ source ${METAQ}/x/launch.sh     # ANYTHING BELOW HERE IS NOT GUARANTEED TO RUN!
 # AND THAT IS ALL!
 ```
 
-If you name your job scripts `x/q_*` then git will ignore your job script.  This will protected them as you need to pull new versions of `METAQ`.
+If you name your job scripts `x/q_*` then git will ignore your job script.  This will protect them as you need to pull new versions of `METAQ`.
 
 # MISCELLANEOUS
 
