@@ -126,7 +126,17 @@ mkdir -p ${METAQ_WORKING} ${METAQ_THIS_JOB} ${METAQ_LOG} 2>/dev/null
 METAQ_RESOURCES=${METAQ_THIS_JOB}/resources
 rm $METAQ_RESOURCES 2>/dev/null
 
-METAQ_PRINT 0 "This is job ${METAQ_JOB_ID}."
+METAQ_PRINT 0 "#############################################################################"
+METAQ_PRINT 0 "#                     __  __ ______ _______       ____                      #"
+METAQ_PRINT 0 "#                    |  \/  |  ____|__   __|/\   / __ \                     #"
+METAQ_PRINT 0 "#                    | \  / | |__     | |  /  \ | |  | |                    #"
+METAQ_PRINT 0 "#                    | |\/| |  __|    | | / /\ \| |  | |                    #"
+METAQ_PRINT 0 "#                    | |  | | |____   | |/ ____ \ |__| |                    #"
+METAQ_PRINT 0 "#                    |_|  |_|______|  |_/_/    \_\___\_\                    #"
+METAQ_PRINT 0 "#                                                                           #"
+METAQ_PRINT 0 "#############################################################################"
+
+METAQ_PRINT 0 "And so begins METAQ job ${METAQ_JOB_ID}."
 METAQ_START=$(date "+%Y-%m-%dT%H:%M:%S")
 METAQ_START_SEC=$(date "+%s")
 METAQ_CLOCK_LIMIT=$(echo "$METAQ_START_SEC $METAQ_RUN_TIME" | awk '{print $1+$2}')
@@ -136,8 +146,8 @@ METAQ_PRINT 5 "clock max $clock_max"
 
 METAQ_PRINT 0 "Resources will be tallied in ${METAQ_RESOURCES}"
 # Seed the $METAQ_RESOURCES file with the allocated number of nodes:
-METAQ_PRINT 1 "${METAQ_NODES} nodes allocated to job ${METAQ_JOB_ID}" | tee $METAQ_RESOURCES
-METAQ_PRINT 1 "${METAQ_GPUS}  gpus allocated to job ${METAQ_JOB_ID}"  | tee -a $METAQ_RESOURCES
+METAQ_PRINT 1 "${METAQ_NODES} nodes allocated to job ${METAQ_JOB_ID} at $METAQ_START" | tee $METAQ_RESOURCES
+METAQ_PRINT 1 "${METAQ_GPUS}  gpus allocated to job ${METAQ_JOB_ID} at $METAQ_START"  | tee -a $METAQ_RESOURCES
 
 if [[ -z "${METAQ_MAX_LAUNCHES}" ]]; then
     METAQ_PRINT 2 "METAQ_MAX_LAUNCHES not defined."
@@ -328,6 +338,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
             while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
                 METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) saturated."
+                METAQ_PRINT 2 "It is currently $(date "+%Y-%m-%dT%H:%M:%S")."
                 METAQ_PRINT 2 "$($METAQ_X/timespan $(METAQ_TIME_REMAINING)) remains on the wall clock."
                 METAQ_PRINT 2 "$(METAQ_AVAILABLE_NODES) nodes will sit idle until task completion."
                 METAQ_PRINT 2 "$(METAQ_AVAILABLE_GPUS) gpus will sit idle until task completion."
@@ -336,7 +347,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             if [[ ! $i == "$METAQ_REMAINING/*" ]]; then
                 METAQ_PRINT 1 $i;
                 METAQ_ATTEMPT_TASK $i
-                METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT}"
+                METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT} at $(date "+%Y-%m-%dT%H:%M:%S")"
                 if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
                     METAQ_LAUNCH_SUCCESS=true
                 fi
@@ -395,6 +406,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
 done
 
 METAQ_PRINT 0 "No more work remains.  Waiting for task completion."
+METAQ_PRINT 0 "It is currently $(date "+%Y-%m-%dT%H:%M:%S")."
 METAQ_PRINT 1 "$($METAQ_X/timespan $(METAQ_TIME_REMAINING)) remains on the wall clock."
 METAQ_PRINT 1 "$(METAQ_AVAILABLE_NODES) nodes will sit idle until task completion."
 METAQ_PRINT 1 "$(METAQ_AVAILABLE_GPUS) gpus will sit idle until task completion."
