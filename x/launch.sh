@@ -117,15 +117,6 @@ fi
 ############################ JOB SETUP
 ############################
 
-METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_JOB_ID}
-METAQ_THIS_JOB=${METAQ_JOBS}/${METAQ_JOB_ID}
-METAQ_LOG=${METAQ_THIS_JOB}/log
-
-mkdir -p ${METAQ_WORKING} ${METAQ_THIS_JOB} ${METAQ_LOG} 2>/dev/null
-
-METAQ_RESOURCES=${METAQ_THIS_JOB}/resources
-rm $METAQ_RESOURCES 2>/dev/null
-
 METAQ_PRINT 0 "#############################################################################"
 METAQ_PRINT 0 "#                     __  __ ______ _______       ____                      #"
 METAQ_PRINT 0 "#                    |  \/  |  ____|__   __|/\   / __ \                     #"
@@ -144,13 +135,32 @@ METAQ_PRINT 0 "START ${METAQ_START}"
 METAQ_PRINT 5 "start sec $METAQ_START_SEC"
 METAQ_PRINT 5 "clock max $clock_max"
 
+METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_JOB_ID}
+METAQ_THIS_JOB=${METAQ_JOBS}/${METAQ_JOB_ID}
+METAQ_LOG=${METAQ_THIS_JOB}/log
+
+mkdir -p ${METAQ_WORKING} ${METAQ_THIS_JOB} ${METAQ_LOG} 2>/dev/null
+
+METAQ_RESOURCES="${METAQ_THIS_JOB}/resources.${METAQ_START//:/}"
+rm $METAQ_RESOURCES 2>/dev/null
+
+
 METAQ_PRINT 0 "Resources will be tallied in ${METAQ_RESOURCES}"
 # Seed the $METAQ_RESOURCES file with the allocated number of nodes:
 METAQ_PRINT 1 "${METAQ_NODES} nodes allocated to job ${METAQ_JOB_ID} at $METAQ_START" | tee $METAQ_RESOURCES
 METAQ_PRINT 1 "${METAQ_GPUS}  gpus allocated to job ${METAQ_JOB_ID} at $METAQ_START"  | tee -a $METAQ_RESOURCES
 
+METAQ_PRINT 1 "Symbolically linking $METAQ_RESOURCES"
+METAQ_PRINT 1 "__________________to ${METAQ_THIS_JOB}/resources ..."
+rm ${METAQ_THIS_JOB}/resources 2>/dev/null
+if ln -s ${METAQ_RESOURCES} ${METAQ_THIS_JOB}/resources; then
+    METAQ_PRINT 2 "Success!"
+else
+    METAQ_PRINT 2 "Failure!"
+fi
+
 if [[ -z "${METAQ_MAX_LAUNCHES}" ]]; then
-    METAQ_PRINT 2 "METAQ_MAX_LAUNCHES not defined."
+    METAQ_PRINT 5 "METAQ_MAX_LAUNCHES not defined."
     METAQ_MAX_LAUNCHES=1048576 # 2^20
 fi
 METAQ_PRINT 0 "We will launch at most ${METAQ_MAX_LAUNCHES} queued items."
@@ -431,6 +441,6 @@ METAQ_PRINT 0 "FINISH:  ${METAQ_FINISH}"
 METAQ_TOTAL_SEC=$(( METAQ_FINISH_SEC - METAQ_START_SEC ))
 METAQ_PRINT 0 "RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))"
 
-echo "-${METAQ_NODES} nodes released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))" >> $METAQ_RESOURCES
-echo "-${METAQ_GPUS}  gpus released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))"  >>  $METAQ_RESOURCES
+METAQ_PRINT 1 "-${METAQ_NODES} nodes released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))" >> $METAQ_RESOURCES
+METAQ_PRINT 1 "-${METAQ_GPUS}  gpus released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))"  >>  $METAQ_RESOURCES
 
