@@ -190,6 +190,10 @@ METAQ_RUN_TIME=900              # Seconds, should match the above walltime=15:00
 
 # OPTIONAL USER-SPECIFIED OPTIONS, with their defaults
 
+METAQ_TASK_FOLDERS=(            # A bash array of priority-ordered absolute paths in which to look for tasks.
+    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of 
+    $METAQ/todo                 # metrics.  Our original use was to separate tasks by nodes, so that we could waste as little
+    )                           # time as possible looking for a "big" task.
 METAQ_GPUS=0                    # An integer describing how many GPUs are allocated to this job.
                                 # How many GPUs to specify is a bit of a subtle business.  See below for more discussion.
 METAQ_MAX_LAUNCHES=1048576      # An integer that limits the number of tasks that can be successfully launched.  Default is 2^20, essentially infinite.

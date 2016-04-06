@@ -166,6 +166,16 @@ fi
 METAQ_PRINT 0 "We will launch at most ${METAQ_MAX_LAUNCHES} queued items."
 METAQ_LAUNCHES=0
 
+# If the user hasn't specified the task folders, use the default folders
+METAQ_PRINT 0 "We will look for tasks in ${#METAQ_TASK_FOLDERS[@]} folders."
+if [[ "0" == "${#METAQ_TASK_FOLDERS[@]}" ]]; then
+    METAQ_TASK_FOLDERS=($METAQ_PRIORITY $METAQ_UNFINISHED)
+    METAQ_PRINT 2 "Looking in the default folders."
+fi
+for METAQ_TASK_FOLDER in ${METAQ_TASK_FOLDERS[@]}; do
+    METAQ_PRINT 1 "$METAQ_TASK_FOLDER"
+done
+
 ############################
 ############################ PREPARE FOR FAILURE
 ############################
@@ -341,9 +351,9 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     METAQ_LAUNCH_SUCCESS=false
 
     METAQ_PRINT 0 "+----------------------------------------------------------------------------------+"
-    
-    for METAQ_REMAINING in {$METAQ_PRIORITY,$METAQ_UNFINISHED}; do
-        METAQ_PRINT 0 "Looping over work in ${METAQ_REMAINING}"
+
+    for METAQ_REMAINING in ${METAQ_TASK_FOLDERS[@]}; do
+        METAQ_PRINT 0 "Looping over tasks in ${METAQ_REMAINING}"
         for i in $(find $METAQ_REMAINING -type f | sort); do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
             while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
@@ -378,7 +388,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     
     METAQ_PRINT 0 ""
     METAQ_PRINT 0 ""
-    METAQ_PRINT 0 "Tried to launch all available work."
+    METAQ_PRINT 0 "Tried to launch all available tasks."
 
     if (! ${METAQ_LAUNCH_SUCCESS} ) && $METAQ_LOOP_TASKS_REMAIN ; then
         METAQ_PRINT 0 "No tasks were launched on the last pass."
@@ -415,7 +425,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     fi 
 done
 
-METAQ_PRINT 0 "No more work remains.  Waiting for task completion."
+METAQ_PRINT 0 "No more tasks remains.  Waiting for task completion."
 METAQ_PRINT 0 "It is currently $(date "+%Y-%m-%dT%H:%M:%S")."
 METAQ_PRINT 1 "$($METAQ_X/timespan $(METAQ_TIME_REMAINING)) remains on the wall clock."
 METAQ_PRINT 1 "$(METAQ_AVAILABLE_NODES) nodes will sit idle until task completion."
