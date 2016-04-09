@@ -30,6 +30,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 - [Table of Contents](#table-of-contents)
 - [Basic Introduction](#basic-introduction)
 - [Task Script Structure](#task-script-structure)
+- [Folder Structure](#folder-structure)
 - [METAQ Flags](#metaq-flags)
   - [NODES](#metaq-nodes-n)
   - [GPUS](#metaq-gpus-g)
@@ -117,6 +118,19 @@ This script can be qsubbed directly to PBS, thanks to the #PBS flags, but can al
 However, as shown in the first example, all of the `#PBS` lines are not strictly necessary.  The essential features are that the script indicates to `METAQ` how many `NODES` and `GPUS` are required and the much time should remain on the job's wall clock before starting this task in `MIN_WC_TIME`.
 
 Task scripts inherit the bash environment variables as the batch scheduler provides them, but do not have access to `METAQ` variables, and are not passed any parameters.  They should be relatively self-contained.
+
+# FOLDER STRUCTURE
+
+By default METAQ looks in the `${METAQ}/priority` and `${METAQ}/todo` folders.  However, by setting the optional `METAQ_TASK_FOLDERS` variable, the user may instead specify the folders that `METAQ` should look in for tasks.
+
+Sometimes it makes sense to organize tasks by their computational requirements.  For example it might make sense to put all the 32 NODE, 0-GPU tasks together, separate from the 8 NODE, 8 GPU tasks.
+
+`METAQ` looks in each folder for a special file `.metaq`.  It parses that file for `#METAQ FLAGS` (as it would a task script) to short-circuit the need to check every file in that folder.  For example, if `METAQ` knows it only has 4 NODES available and it's currently looking through a folder whose `.metaq` file claims that the folder contains jobs that requires 8 NODES, it will skip to the next folder.
+
+It's important to understand that `METAQ` doesn't *enforce* the consistency of the folder's `.metaq` file and the tasks that folder contains.  So, `METAQ` might skip over a task that it could execute if the folder's `.metaq` claims the associated tasks are bigger than the particular task.
+
+If the `.metaq` file isn't there, then `METAQ` will loop over every file in the folder no matter what.
+
 
 # METAQ FLAGS
 
