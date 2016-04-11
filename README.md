@@ -119,6 +119,8 @@ However, as shown in the first example, all of the `#PBS` lines are not strictly
 
 Task scripts inherit the bash environment variables as the batch scheduler provides them, but do not have access to `METAQ` variables, and are not passed any parameters.  They should be relatively self-contained.
 
+Tasks should not be invisible files or reside in invisible folders.  `METAQ` ignores any task file with '/.' in its absolute path.
+
 # FOLDER STRUCTURE
 
 By default METAQ looks in the `${METAQ}/priority` and `${METAQ}/todo` folders.  However, by setting the optional `METAQ_TASK_FOLDERS` variable, the user may instead specify the folders that `METAQ` should look in for tasks.
@@ -130,6 +132,8 @@ Sometimes it makes sense to organize tasks by their computational requirements. 
 It's important to understand that `METAQ` doesn't *enforce* the consistency of the folder's `.metaq` file and the tasks that folder contains.  So, `METAQ` might skip over a task that it could execute if the folder's `.metaq` claims the associated tasks are bigger than the particular task.
 
 If the `.metaq` file isn't there, then `METAQ` will loop over every file in the folder no matter what.
+
+Valid FLAGs for a folder are `NODES`, `GPUS`, `MIN_WC_TIME`.
 
 
 # METAQ FLAGS
