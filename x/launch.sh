@@ -390,14 +390,12 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
                 sleep ${METAQ_SLEEPY_TIME_TASK_SATURATION}
             done
             
-            METAQ_CHECK_NODES=$(METAQ_AVAILABLE_NODES)
-            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_NODES -gt $METAQ_CHECK_NODES ]]; then
-                METAQ_PRINT 1 "Skipping tasks because folder NODE requirement $METAQ_FOLDER_NODES exceeds the available nodes $METAQ_CHECK_NODES."
+            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_NODES -gt $METAQ_NODES ]]; then
+                METAQ_PRINT 1 "Skipping tasks because folder NODE requirement $METAQ_FOLDER_NODES exceeds the allocated $METAQ_NODES nodes."
                 break
             fi
-            METAQ_CHECK_GPUS=$(METAQ_AVAILABLE_GPUS)
-            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_GPUS -gt $METAQ_CHECK_GPUS ]]; then
-                METAQ_PRINT 1 "Skipping tasks because folder GPU requirement $METAQ_FOLDER_NODES exceeds the available gpus $METAQ_CHECK_NODES."
+            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_GPUS -gt $METAQ_GPUS ]]; then
+                METAQ_PRINT 1 "Skipping tasks because folder GPU requirement $METAQ_FOLDER_GPUS exceeds the allocated $METAQ_GPUS GPUs."
                 break
             fi
             METAQ_CHECK_CLOCK=$(METAQ_TIME_REMAINING)
@@ -405,22 +403,29 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
                 METAQ_PRINT 1 "Skipping tasks because folder time requirement $($METAQ_X/timespan $METAQ_FOLDER_TIME_REQUIRED) exceeds the available clock time $($METAQ_X/timespan $METAQ_CHECK_CLOCK)."
                 break
             fi
-
-            
-            if [[ ! $i == "$METAQ_REMAINING/*" ]]; then
-                METAQ_PRINT 1 $i;
-                METAQ_ATTEMPT_TASK $i
-                METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT} at $(date "+%Y-%m-%dT%H:%M:%S")"
-                if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
-                    METAQ_LAUNCH_SUCCESS=true
-                fi
-                if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") ]]; then
-                    METAQ_LOOP_TASKS_REMAIN=true
-                fi
-                sleep 1 #so that launched subprocesses have time to start.
-            else
-                METAQ_LOOP_TASKS_REMAIN=false
+            METAQ_CHECK_NODES=$(METAQ_AVAILABLE_NODES)
+            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_NODES -gt $METAQ_CHECK_NODES ]]; then
+                METAQ_LOOP_TASKS_REMAIN=true
+                METAQ_PRINT 1 "Skipping tasks because folder NODE requirement $METAQ_FOLDER_NODES exceeds the available nodes $METAQ_CHECK_NODES."
+                break
             fi
+            METAQ_CHECK_GPUS=$(METAQ_AVAILABLE_GPUS)
+            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_GPUS -gt $METAQ_CHECK_GPUS ]]; then
+                METAQ_LOOP_TASKS_REMAIN=true
+                METAQ_PRINT 1 "Skipping tasks because folder GPU requirement $METAQ_FOLDER_NODES exceeds the available gpus $METAQ_CHECK_NODES."
+                break
+            fi
+
+            METAQ_PRINT 1 $i;
+            METAQ_ATTEMPT_TASK $i
+            METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT} at $(date "+%Y-%m-%dT%H:%M:%S")"
+            if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
+                METAQ_LAUNCH_SUCCESS=true
+            fi
+            if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") ]]; then
+                METAQ_LOOP_TASKS_REMAIN=true
+            fi
+            sleep 1 #so that launched subprocesses have time to start.
         done
     done
     
