@@ -267,6 +267,8 @@ If some of your tasks are smart and can use the whole node and some cannot, you 
     
 So, to summarize: GPU is really a stand-in for a way to partition the physical node.  You should make sure your partition makes sense and is compatible between all your tasks.
 
+Finally, you can set up a task that could run on different machines that seem the same `METAQ`.  However, currently `METAQ` doesn't know how to read machine-dependent settings.  In the example where we first understood this meature of `METAQ`, one machine had nodes with huge memory while the other didn't, meaning that on the first we could run on one physical node and on the other we needed four physical nodes.  By writing a machine-aware task script, setting the `#METAQ NODE` flag to 1, and setting `METAQ_NODES` to `(physical nodes / 4)` we could circumvent this hardware requirement mismatch.
+
 # METAQ MONITORING
 
 `METAQ` provides a number of small accessories to see what's going on.  
