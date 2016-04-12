@@ -31,6 +31,11 @@ if [[ -z "$METAQ_RUN_TIME" ]]; then
     exit
 fi
 
+if [[ -z "$METAQ_MACHINE" ]]; then
+    echo "You must tell METAQ a machine name via the METAQ_MACHINE variable."
+    exit
+fi
+
 ############################
 ############################ CHECK OPTIONAL OPTIONS
 ############################
@@ -50,9 +55,6 @@ if [[ -z "$METAQ_VERBOSITY" ]]; then
 fi
 if [[ -z "$METAQ_LOOP_FOREVER" ]]; then
     METAQ_LOOP_FOREVER=false
-fi
-if [[ -z "$METAQ_MACHINE" ]]; then
-    METAQ_MACHINE=machine
 fi
 if [[ -z "$METAQ_SIMULTANEOUS_TASKS" ]]; then
     METAQ_SIMULTANEOUS_TASKS=1048576
@@ -135,7 +137,7 @@ METAQ_PRINT 0 "START ${METAQ_START}"
 METAQ_PRINT 5 "start sec $METAQ_START_SEC"
 METAQ_PRINT 5 "clock max $clock_max"
 
-METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_JOB_ID}
+METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_MACHINE}/${METAQ_JOB_ID}
 METAQ_THIS_JOB=${METAQ_JOBS}/${METAQ_JOB_ID}
 METAQ_LOG=${METAQ_THIS_JOB}/log
 

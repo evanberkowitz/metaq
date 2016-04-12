@@ -204,6 +204,8 @@ METAQ_NODES=${SLURM_NNODES}     # Integer, which should be less than or equal to
                                 # But if it's less than, you're guaranteeing you're wasting resources.
 METAQ_RUN_TIME=900              # Seconds, should match the above walltime=15:00.
                                 # You may also specify times in the format for the #METAQ MIN_WC_TIME flag, [[HH:]MM:]SS.
+METAQ_MACHINE=machine           # Any string. Helps organize the working directory.
+                                # Could in the future interact with METAQ MACHINE flag.
 
 
 # OPTIONAL USER-SPECIFIED OPTIONS, with their defaults
@@ -219,8 +221,6 @@ METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run ou
                                 # If METAQ_LOOP_FOREVER is true then METAQ will continue to look for remaining tasks,
                                 # even if it finds none and it is not waiting for any tasks to finish.
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
-METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but it could in the future!
-                                # Would interact with METAQ MACHINE flag.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
 METAQ_SIMULTANEOUS_TASKS=1048576 # An integer that limits how many tasks can run concurrently.
@@ -279,7 +279,7 @@ Reports based on tasks' PROJECT flag what's in the `METAQ/{priority,todo,hold}` 
 ####`x/running`
 Reports the current status of jobs in the working folder.  This only works if you have set up
 
-####`x/reset`
+####`x/reset machineArgument`
 WARNING WARNING WARNING
 
 SERIOUSLY
@@ -288,8 +288,8 @@ HANDLE WITH CARE!
     
 If your queue contains only work for one machine, this is perfectly fine.  
 However, if `METAQ_JOB_RUNNING` (see below on interacting with the batch scheduler) could potentially miss the existence of a job then this command can wreck havoc.
-This task looks in the working directory, and looks for abandoned work.  
-If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/METAQ_JOB_ID` folder.
+This script looks in the `working/${machineArgument}` directory, and looks for abandoned work.
+If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/${machineArgument}/METAQ_JOB_ID` folder.
 
 ## INTERACTING WITH THE BATCH SCHEDULER
 
