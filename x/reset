@@ -4,6 +4,7 @@ METAQ=$( cd $(dirname $0)/.. ; pwd -P )
 METAQ_X=${METAQ}/x
 METAQ_LIB=${METAQ_X}/metaq_lib.sh
 METAQ_VERBOSITY=3
+METAQ_MACHINE=$1
 
 if [[ ! -f ${METAQ_LIB} ]]; then
     echo "METAQ library is missing from ${METAQ_LIB}"
@@ -16,8 +17,20 @@ source ${METAQ_LIB}
 ### CHECK JOBS AND RESET
 ###
 
-for job in ${METAQ_WORKING_BASE}/*; do
-    if [[ "$job" == "${METAQ_WORKING_BASE}/*" ]]; then
+if [[ -z "$METAQ_MACHINE" ]]; then
+    echo "One mandatory argument: machine"
+    exit
+fi
+
+METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_MACHINE}
+
+if [[ ! -d ${METAQ_WORKING} ]]; then
+    echo "No working folder at ${METAQ_WORKING}."
+    exit
+fi
+
+for job in ${METAQ_WORKING}/*; do
+    if [[ "$job" == "${METAQ_WORKING}/*" ]]; then
         echo "No jobs to consider."
         continue
     fi
