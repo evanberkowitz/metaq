@@ -20,11 +20,17 @@ METAQ_NODES=${SLURM_NNODES}     # Integer, which should be less than or equal to
                                 # But if it's less than, you're guaranteeing you're wasting resources.
 METAQ_RUN_TIME=43200              # Seconds, should match the above walltime=15:00.
                                 # You may also specify times in the format for the #METAQ MIN_WC_TIME flag, [[HH:]MM:]SS.
+METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but it could in the future!
+                                # Would interact with METAQ MACHINE flag.
 
 
 # OPTIONAL USER-SPECIFIED OPTIONS, with their defaults
 # These may be omitted if you want.
 
+METAQ_TASK_FOLDERS=(            # A bash array of priority-ordered absolute paths in which to look for tasks.
+    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of 
+    $METAQ/todo                 # metrics.  Our original use was to separate tasks by nodes, so that we could waste as little
+    )                           # time as possible looking for a "big" task.
 METAQ_GPUS=$[ METAQ_NODES * 1 ] # An integer describing how many GPUs are allocated to this job.
                                 # How many GPUs to specify is a bit of a subtle business.  See METAQ/README.txt for more discussion.
 METAQ_MAX_LAUNCHES=1048576      # An integer that limits the number of tasks that can be successfully launched.  Default is 2^20, essentially infinite.
@@ -32,8 +38,6 @@ METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run ou
                                 # If METAQ_LOOP_FOREVER is true then METAQ will continue to look for remaining tasks,
                                 # even if it finds none and it is not waiting for any tasks to finish.
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
-METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but it could in the future!
-                                # Would interact with METAQ MACHINE flag.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
 

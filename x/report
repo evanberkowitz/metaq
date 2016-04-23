@@ -22,12 +22,12 @@ fi
 # As in http://stackoverflow.com/a/8748344/2966190 :
 if date -d $earliest >/dev/null 2>&1 ; then
     METAQ_PRINT 5 "Using GNU date, so it does understand the -d DATESTRING option."
-    node="$(find -H ${METAQ}/jobs -path '*/resources' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
-    gpu="$( find -H ${METAQ}/jobs -path '*/resources' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
+    node="$(find -H ${METAQ}/jobs -path '*/resources.*' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
+    gpu="$( find -H ${METAQ}/jobs -path '*/resources.*' -newermt "${earliest}" -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
 else
     METAQ_PRINT 5 "Not using GNU date, so it doesn't understand the -d DATESTRING option."
-    node="$(find -H ${METAQ}/jobs -path '*/resources' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
-    gpu="$( find -H ${METAQ}/jobs -path '*/resources' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
+    node="$(find -H ${METAQ}/jobs -path '*/resources.*' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "node" | awk '{print $8, $1*$12, $10}')"
+    gpu="$( find -H ${METAQ}/jobs -path '*/resources.*' -exec cat {} \; | grep -i released | grep -i 'for project' | grep "gpu"  | awk '{print $8, $1*$12, $10}')"
 fi
 
 

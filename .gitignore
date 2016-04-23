@@ -7,3 +7,5 @@ priority/*
 todo/*
 working/*
 x/batch.sh
+x/q_*
+*.OU

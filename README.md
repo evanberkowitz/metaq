@@ -30,6 +30,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
 - [Table of Contents](#table-of-contents)
 - [Basic Introduction](#basic-introduction)
 - [Task Script Structure](#task-script-structure)
+- [Folder Structure](#folder-structure)
 - [METAQ Flags](#metaq-flags)
   - [NODES](#metaq-nodes-n)
   - [GPUS](#metaq-gpus-g)
@@ -118,6 +119,23 @@ However, as shown in the first example, all of the `#PBS` lines are not strictly
 
 Task scripts inherit the bash environment variables as the batch scheduler provides them, but do not have access to `METAQ` variables, and are not passed any parameters.  They should be relatively self-contained.
 
+Tasks should not be invisible files or reside in invisible folders.  `METAQ` ignores any task file with '/.' in its absolute path.
+
+# FOLDER STRUCTURE
+
+By default METAQ looks in the `${METAQ}/priority` and `${METAQ}/todo` folders.  However, by setting the optional `METAQ_TASK_FOLDERS` variable, the user may instead specify the folders that `METAQ` should look in for tasks.
+
+Sometimes it makes sense to organize tasks by their computational requirements.  For example it might make sense to put all the 32 NODE, 0-GPU tasks together, separate from the 8 NODE, 8 GPU tasks.
+
+`METAQ` looks in each folder for a special file `.metaq`.  It parses that file for `#METAQ FLAGS` (as it would a task script) to short-circuit the need to check every file in that folder.  For example, if `METAQ` knows it only has 4 NODES available and it's currently looking through a folder whose `.metaq` file claims that the folder contains jobs that requires 8 NODES, it will skip to the next folder.
+
+It's important to understand that `METAQ` doesn't *enforce* the consistency of the folder's `.metaq` file and the tasks that folder contains.  So, `METAQ` might skip over a task that it could execute if the folder's `.metaq` claims the associated tasks are bigger than the particular task.
+
+If the `.metaq` file isn't there, then `METAQ` will loop over every file in the folder no matter what.
+
+Valid FLAGs for a folder are `NODES`, `GPUS`, `MIN_WC_TIME`.
+
+
 # METAQ FLAGS
 
 `METAQ` flags are always passed each on their own line.  They always have the structure
@@ -186,10 +204,16 @@ METAQ_NODES=${SLURM_NNODES}     # Integer, which should be less than or equal to
                                 # But if it's less than, you're guaranteeing you're wasting resources.
 METAQ_RUN_TIME=900              # Seconds, should match the above walltime=15:00.
                                 # You may also specify times in the format for the #METAQ MIN_WC_TIME flag, [[HH:]MM:]SS.
+METAQ_MACHINE=machine           # Any string. Helps organize the working directory.
+                                # Could in the future interact with METAQ MACHINE flag.
 
 
 # OPTIONAL USER-SPECIFIED OPTIONS, with their defaults
 
+METAQ_TASK_FOLDERS=(            # A bash array of priority-ordered absolute paths in which to look for tasks.
+    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of 
+    $METAQ/todo                 # metrics.  Our original use was to separate tasks by nodes, so that we could waste as little
+    )                           # time as possible looking for a "big" task.
 METAQ_GPUS=0                    # An integer describing how many GPUs are allocated to this job.
                                 # How many GPUs to specify is a bit of a subtle business.  See below for more discussion.
 METAQ_MAX_LAUNCHES=1048576      # An integer that limits the number of tasks that can be successfully launched.  Default is 2^20, essentially infinite.
@@ -197,17 +221,20 @@ METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run ou
                                 # If METAQ_LOOP_FOREVER is true then METAQ will continue to look for remaining tasks,
                                 # even if it finds none and it is not waiting for any tasks to finish.
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
-METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but it could in the future!
-                                # Would interact with METAQ MACHINE flag.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
 METAQ_SIMULTANEOUS_TASKS=1048576 # An integer that limits how many tasks can run concurrently.
                                  # Some environments limit how many simultaneous tasks you can submit.  For example,
                                  # [on Titan, users are artificially limited to 100 simultaneous aprun processes](https://www.olcf.ornl.gov/kb_articles/using-the-aprun-command/).
-METAQ_MIN_NODES=0               # Integers that puts a lower size limit on jobs.
-METAQ_MIN_GPUS=0                # If the main loop decides that there were no possible jobs, it will halve these minimal
+METAQ_MIN_NODES=0               # Integers that puts a lower size limit on tasks.
+METAQ_MIN_GPUS=0                # If the main loop decides that there were no possible tasks, it will halve these minimal
                                 # values and loop again.  It will only concede that there are truly no possible jobs when
                                 # these minimal values are <= 1.
+METAQ_MAX_NODES=${METAQ_NODES}  # Integers that puts an upper size limit on jobs.
+METAQ_MAX_GPUS=${METAQ_GPUS}    # If the main loop decides that there were no possible jobs, it will double these maximal
+                                # values and loop again.  It will only concede that there are truly no possible jobs when
+                                # these maximal values max out at METAQ_NODES and METAQ_GPUS respectively.
+
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.
@@ -219,6 +246,8 @@ source ${METAQ}/x/launch.sh     # ANYTHING BELOW HERE IS NOT GUARANTEED TO RUN!
 
 # AND THAT IS ALL!
 ```
+
+If you name your job scripts `x/q_*` then git will ignore your job script.  This will protect them as you need to pull new versions of `METAQ`.
 
 # MISCELLANEOUS
 
@@ -238,6 +267,8 @@ If some of your tasks are smart and can use the whole node and some cannot, you 
     
 So, to summarize: GPU is really a stand-in for a way to partition the physical node.  You should make sure your partition makes sense and is compatible between all your tasks.
 
+Finally, you can set up a task that could run on different machines that seem the same `METAQ`.  However, currently `METAQ` doesn't know how to read machine-dependent settings.  In the example where we first understood this meature of `METAQ`, one machine had nodes with huge memory while the other didn't, meaning that on the first we could run on one physical node and on the other we needed four physical nodes.  By writing a machine-aware task script, setting the `#METAQ NODE` flag to 1, and setting `METAQ_NODES` to `(physical nodes / 4)` on the smaller machine, we could circumvent this hardware requirement mismatch.
+
 # METAQ MONITORING
 
 `METAQ` provides a number of small accessories to see what's going on.  
@@ -248,7 +279,7 @@ Reports based on tasks' PROJECT flag what's in the `METAQ/{priority,todo,hold}` 
 ####`x/running`
 Reports the current status of jobs in the working folder.  This only works if you have set up
 
-####`x/reset`
+####`x/reset machineArgument`
 WARNING WARNING WARNING
 
 SERIOUSLY
@@ -257,8 +288,8 @@ HANDLE WITH CARE!
     
 If your queue contains only work for one machine, this is perfectly fine.  
 However, if `METAQ_JOB_RUNNING` (see below on interacting with the batch scheduler) could potentially miss the existence of a job then this command can wreck havoc.
-This task looks in the working directory, and looks for abandoned work.  
-If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/METAQ_JOB_ID` folder.
+This script looks in the `working/${machineArgument}` directory, and looks for abandoned work.
+If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/${machineArgument}/METAQ_JOB_ID` folder.
 
 ## INTERACTING WITH THE BATCH SCHEDULER
 
@@ -311,8 +342,6 @@ Some of the accessory scripts detect their own location on disk and infer what M
 - [ ] The business about NODEs and GPUs is more subtle than is ideal.  But without making METAQ substantially more complicated I don't know how to solve the issue.
 
 - [ ] Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
-
-- [ ] Big tasks are not preferred over small tasks.
 
 # LICENSE
 

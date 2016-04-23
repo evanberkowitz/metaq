@@ -14,7 +14,7 @@ source ${METAQ_LIB}
 
 for folder in {${METAQ_PRIORITY},${METAQ_UNFINISHED},${METAQ_HOLD}}; do
     echo "$folder"
-    for task in $folder/*; do
+    for task in $(find todo -type f \( ! -path '*/.*' \)); do
         METAQ_TASK_PROJECT $task
     done | sort | uniq -c | sort -k1,1n
 done
