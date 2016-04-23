@@ -1,5 +1,7 @@
 #!/bin/bash
 
+METAQ=$( cd $(dirname $0)/.. ; pwd -P )
+
 function METAQ_INSTALL_PROMPT () {
     prompt=$1
     default=$2
