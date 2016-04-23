@@ -177,6 +177,14 @@ function METAQ_ATTEMPT_TASK {
     METAQ_TASK_LOG=$(METAQ_TASK_LOG_FILE $METAQ_TASK_FULL)
     METAQ_TASK_PROJ=$(METAQ_TASK_PROJECT $METAQ_TASK_FULL)
     
+    if [[ ! -z "$METAQ_TASK_LOG" ]]; then
+        METAQ_TASK_LOG_FOLDER=$(dirname $METAQ_TASK_LOG);
+        if [[ ! -d "$METAQ_TASK_LOG_FOLDER" ]]; then
+            METAQ_PRINT 5 "Creating folder required by #METAQ LOG flag $METAQ_TASK_LOG_FOLDER"
+            mkdir -p "$METAQ_TASK_LOG_FOLDER" 2>/dev/null
+        fi
+    fi
+    
     # If the task specified a project for accounting purposes, make sure you log that.
     if [[ ! -z "$METAQ_TASK_PROJ" ]]; then
         METAQ_TASK_PROJ=" for project $METAQ_TASK_PROJ"
