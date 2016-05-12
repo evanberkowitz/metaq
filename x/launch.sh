@@ -68,10 +68,10 @@ if [[ -z "$METAQ_MIN_GPUS" ]]; then
 fi
 
 if [[ -z "$METAQ_MAX_NODES" ]]; then
-    METAQ_MAX_NODES=METAQ_NODES;
+    METAQ_MAX_NODES=$METAQ_NODES;
 fi
 if [[ -z "$METAQ_MAX_GPUS" ]]; then
-    METAQ_MAX_GPUS=METAQ_GPUS;
+    METAQ_MAX_GPUS=$METAQ_GPUS;
 fi
 
 if [[ "$METAQ_MAX_NODES" -gt "$METAQ_NODES" ]]; then
