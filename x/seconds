@@ -3,7 +3,10 @@
 # convert hh:mm:ss format to seconds
 t=$1
 
-[ -z "$t" ] && echo "usage - $0 ( [[hh:]mm:]ss | h'hr' | m'min')" >&2 && echo "0" && exit 86
+if [[ -z "$t" ]]; then
+    echo "0"
+    exit
+fi
 
 case $t in
   *d    ) seconds=$[86400*${t%d}];;
