@@ -100,14 +100,14 @@ source ${METAQ_X}/metaq_lib.sh
 ############################ CHECK OPTION CONSISTENCY
 ############################
 
-if [[ "$METAQ_MAX_NODES" < "$METAQ_MIN_NODES" ]]; then
+if [[ "$METAQ_MAX_NODES" -lt "$METAQ_MIN_NODES" ]]; then
     METAQ_PRINT 0 "You specified inconsistent task requirements:"
     METAQ_PRINT 1 "You mandated the  largest task be ${METAQ_MAX_NODES} nodes"
     METAQ_PRINT 1 "         but the smallest task be ${METAQ_MIN_NODES} nodes"
     METAQ_PRINT 0 "Exiting."
     exit
 fi
-if [[ "$METAQ_MAX_GPUS" < "$METAQ_MIN_GPUS" ]]; then
+if [[ "$METAQ_MAX_GPUS" -lt "$METAQ_MIN_GPUS" ]]; then
     METAQ_PRINT 0 "You specified inconsistent task requirements:"
     METAQ_PRINT 1 "You mandated the  largest task be ${METAQ_MAX_GPUS} GPUs"
     METAQ_PRINT 1 "         but the smallest task be ${METAQ_MIN_GPUS} GPUs"
