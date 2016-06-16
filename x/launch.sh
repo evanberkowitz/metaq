@@ -293,7 +293,13 @@ function METAQ_ATTEMPT_TASK {
         METAQ_TASK_PROJ=" for project $METAQ_TASK_PROJ"
     fi
 
-    if mv $METAQ_TASK_FULL $METAQ_WORKING 2>/dev/null; then
+    if [[ ! -d "$METAQ_WORKING" ]]; then
+        METAQ_PRINT 1 "$METAQ_WORKING surprisingly not found.  Recreating..."
+        # Hopefully avoid a bad race condition
+        mkdir -p $METAQ_WORKING
+    fi
+
+    if mv $METAQ_TASK_FULL $METAQ_WORKING/ 2>/dev/null; then
         # If you successfully move the task script to the working directory, you know nobody else did the same.
         # Therefore, start it!
         (
