@@ -29,6 +29,13 @@ if [[ ! -d ${METAQ_WORKING} ]]; then
     exit
 fi
 
+if [[ ! "function" == "$(type -t METAQ_JOB_RUNNING)" ]]; then
+    echo "METAQ_JOB_RUNNING is not a valid bash function."
+    echo "Proceeding could cause catastrophic loss of currently running jobs."
+    echo "Exiting for safety."
+    exit;
+fi
+
 for job in ${METAQ_WORKING}/*; do
     if [[ "$job" == "${METAQ_WORKING}/*" ]]; then
         echo "No jobs to consider."
