@@ -128,6 +128,16 @@ function METAQ_TIME_REMAINING {
 if [[ ! -f $(METAQ_READLINK ${METAQ_X}/batch.sh) ]]; then
     echo "${METAQ_X}/batch.sh does not point to a batch scheduler file."
     METAQ_BATCH_SCHEDULER=NONE
+    if [[ ! -f "${METAQ_X}/no_batch_scheduler.sh" ]]; then
+        echo "Moreover, ${METAQ_X}/no_batch_scheduler.sh is missing!"
+        echo "Exiting for safety."
+        exit
+    fi
+    echo "You are encouraged to symbolically link $METAQ_X/batch.sh to a file providing"
+    echo "a batch scheduler interface.  More details can be found in ${METAQ}/README.md."
+    echo "This can be accomplished by running x/install"
+    echo "For safety, we default to ${METAQ_X}/no_batch_scheduler.sh"
+    source ${METAQ_X}/no_batch_scheduler.sh
 else
     source $(METAQ_READLINK ${METAQ_X}/batch.sh)
 fi
