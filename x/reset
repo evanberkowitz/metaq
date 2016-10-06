@@ -29,6 +29,25 @@ if [[ ! -d ${METAQ_WORKING} ]]; then
     exit
 fi
 
+echo "You are on machine                                $HOSTNAME"
+echo "You intend to reset tasks as though you are on    $METAQ_MACHINE"
+echo ""
+echo "If these don't match, you might cause yourself a headache."
+echo ""
+read -p "Do you wish to proceed? [y/N] " proceed
+echo ""
+
+YES='^[yY].*$'
+
+if [[ ! -z "$proceed" && "$proceed" =~ $YES ]]; then
+    echo "                              OK, resetting."
+else
+    echo "                              NOT resetting."
+    exit
+fi
+exit
+
+
 if [[ ! "function" == "$(type -t METAQ_JOB_RUNNING)" ]]; then
     echo "METAQ_JOB_RUNNING is not a valid bash function."
     echo "Proceeding could cause catastrophic loss of currently running jobs."
