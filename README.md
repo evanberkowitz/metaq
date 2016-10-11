@@ -291,6 +291,9 @@ However, if `METAQ_JOB_RUNNING` (see below on interacting with the batch schedul
 This script looks in the `working/${machineArgument}` directory, and looks for abandoned work.
 If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/${machineArgument}/METAQ_JOB_ID` folder.
 
+`x/reset` will compare `$HOSTNAME` to `^${machineArgument}.*$`.  If there's a match, the assumption is that running `x/reset` is probably OK.  If there's a mismatch, the user will get a warning and prompted for confirmation.
+
+
 ## INTERACTING WITH THE BATCH SCHEDULER
 
 For some accessories, `METAQ` needs to know about your batch scheduler.
