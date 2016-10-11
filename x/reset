@@ -45,8 +45,6 @@ else
     echo "                              NOT resetting."
     exit
 fi
-exit
-
 
 if [[ ! "function" == "$(type -t METAQ_JOB_RUNNING)" ]]; then
     echo "METAQ_JOB_RUNNING is not a valid bash function."
