@@ -348,4 +348,41 @@ Some of the accessory scripts detect their own location on disk and infer what M
 
 # LICENSE
 
-I would ultimately like to publish this git repo and a short document to the arXiv.  I imagine releasing under a license that's like [CC-BY-SA](https://creativecommons.org/licenses/by-sa/2.0/) for software, so that the acknowledgement requirement binds upon use, rather than upon distribution.
+I would ultimately like to publish a short document to the arXiv detailing this software.  `METAQ` grew out of finding collaborative HPC projects increasingly difficult to coordinate, and is a ground-up rewrite of scripts I originally crafted with [Thorsten Kurth](https://github.com/azrael417).
+
+`METAQ` inspired my collaborators and I to work on `mpi_jm`, a C version that lives at the MPI level so that it stresses the head nodes of machines much more lightly (we crashed Titan with `METAQ`, although we were within the bounds of its user guide) and only relies on a single `aprun` (or `srun`, or equivalent).  `mpi_jm` should be finished sooner rather than later, and I will link it here when it is in a presentable state, at which point development of `METAQ` will likely cease entirely, deprecated in favor of `mpi_jm`, though I am happy to accept pull requests.  There will still be some situations where `METAQ` may be preferable---since `mpi_jm` will require recompiling against it as a library (and adding about 5 lines of code to your executable).
+
+In the meantime, I would really appreciate if you would cite
+
+```
+@misc{berkowitz.metaq,
+  author = {Berkowitz, Evan},
+  title = {\texttt{METAQ}},
+  year = {2016},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/evanberkowitz/metaq}},
+  commit = {...}
+}
+```
+
+or drop me an email / buy me a beer at a conference if `METAQ` helped you push your project through the supercomputers efficiently.  But, the license is GPLv3.0.
+
+```
+METAQ
+    Bundle supercomputing tasks.
+    Copyright (C) 2016  Evan Berkowitz
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
