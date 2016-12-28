@@ -368,6 +368,8 @@ In the meantime, I would really appreciate if you would cite
 
 or drop me an email / buy me a beer at a conference if `METAQ` helped you push your project through the supercomputers efficiently.  But, the license is GPLv3.0.
 
+I would love there to be a free software license that was as liberal as the GPL but had a binding citation requirement upon use (rather than upon redistribution).
+
 ```
 METAQ
     Bundle supercomputing tasks.
