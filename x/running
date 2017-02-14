@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [[ ! "$#" == "1"  ]]; then
+    echo "Mandatory argument: the machine name."
+    exit
+fi
+
+METAQ_MACHINE=$1
+
 METAQ=$( cd $(dirname $0)/.. ; pwd -P )
 METAQ_X=${METAQ}/x
 METAQ_LIB=${METAQ_X}/metaq_lib.sh
@@ -12,12 +19,18 @@ fi
 
 source ${METAQ_LIB}
 
+
 ###
 ### CHECK JOBS AND RESET
 ###
 
-for job in ${METAQ_WORKING_BASE}/*; do
-    if [[ "${job}" == "${METAQ_WORKING_BASE}/*" ]]; then
+if [[ "$(ls ${METAQ_WORKING_BASE}/${METAQ_MACHINE}/* 2>/dev/null | wc -l | tr -d '[:blank:]')" == "0" ]]; then
+    echo "No jobs to consider."
+    exit;
+fi
+
+for job in ${METAQ_WORKING_BASE}/${METAQ_MACHINE}/*; do
+    if [[ "${job}" == "${METAQ_WORKING_BASE}/${METAQ_MACHINE}*" ]]; then
         echo "No jobs to consider."
         continue
     fi
