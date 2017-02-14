@@ -6,6 +6,12 @@ log/*
 priority/*
 todo/*
 working/*
+
+#Set on METAQ installation:
 x/batch.sh
+
+#User job scripts:
 x/q_*
+
+#PBS logs, which sometimes land in the root directory.
 *.OU
