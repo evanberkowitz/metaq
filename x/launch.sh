@@ -428,7 +428,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             METAQ_CHECK_GPUS=$(METAQ_AVAILABLE_GPUS)
             if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_GPUS -gt $METAQ_CHECK_GPUS ]]; then
                 METAQ_LOOP_TASKS_REMAIN=true
-                METAQ_PRINT 1 "Skipping tasks because folder GPU requirement $METAQ_FOLDER_NODES exceeds the available gpus $METAQ_CHECK_NODES."
+                METAQ_PRINT 1 "Skipping tasks because folder GPU requirement $METAQ_FOLDER_GPUS exceeds the available gpus $METAQ_CHECK_GPUS."
                 break
             fi
 
