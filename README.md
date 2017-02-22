@@ -362,7 +362,7 @@ I posted a short document to the arXiv, [1702.06122](https://arxiv.org/abs/1702.
   author = {Evan Berkowitz},
   title = {\texttt{METAQ}: Bundle Supercomputing Tasks},
   year = {2017},
-  eprint         = "1701.07559",
+  eprint         = "1702.06122",
   archivePrefix  = "arXiv",
   primaryClass   = "physics.comp-ph",
   url = {https://github.com/evanberkowitz/metaq},
