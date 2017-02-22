@@ -346,13 +346,16 @@ Some of the accessory scripts detect their own location on disk and infer what M
 
 - [ ] Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
 
-# LICENSE
+#ACKNOWLEDGEMENTS
 
-I would ultimately like to publish a short document to the arXiv detailing this software.  `METAQ` grew out of finding collaborative HPC projects increasingly difficult to coordinate, and is a ground-up rewrite of scripts I originally crafted with [Thorsten Kurth](https://github.com/azrael417).
+`METAQ` grew out of finding collaborative HPC projects increasingly difficult to coordinate, and is a ground-up rewrite of scripts I originally crafted with [Thorsten Kurth](https://github.com/azrael417).  The separation of job submission from
+task description was emphasized as a useful trick by Chris Schroeder when I began working on lattice QCD at LLNL.
 
 `METAQ` inspired my collaborators and I to work on `mpi_jm`, a C version that lives at the MPI level so that it stresses the head nodes of machines much more lightly (we crashed Titan with `METAQ`, although we were within the bounds of its user guide) and only relies on a single `aprun` (or `srun`, or equivalent).  `mpi_jm` should be finished sooner rather than later, and I will link it here when it is in a presentable state, at which point development of `METAQ` will likely cease entirely, deprecated in favor of `mpi_jm`, though I am happy to accept pull requests.  There will still be some situations where `METAQ` may be preferable---since `mpi_jm` will require recompiling against it as a library (and adding about 5 lines of code to your executable).
 
-In the meantime, I would really appreciate if you would cite
+# LICENSE
+
+I posted a short document to the arXiv, [1702.06122](https://arxiv.org/abs/1702.06122).  Here's a `bibtex` entry that I'd appreciate if you cited if you find `METAQ` useful
 
 ```
 @article{berkowitz.metaq,
@@ -367,9 +370,7 @@ In the meantime, I would really appreciate if you would cite
 }
 ```
 
-or drop me an email / buy me a beer at a conference if `METAQ` helped you push your project through the supercomputers efficiently.  But, the license is GPLv3.0.
-
-I would love there to be a free software license that was as liberal as the GPL but had a binding citation requirement upon use (rather than upon redistribution).
+or drop me an email / buy me a beer at a conference if `METAQ` helped you push your project through the supercomputers efficiently.  But, the license is `GPLv3.0`.  I would love there to be a free software license that was as liberal as the GPL but had a binding citation requirement upon use (rather than upon redistribution).
 
 ```
 METAQ
