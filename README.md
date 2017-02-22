@@ -355,14 +355,15 @@ I would ultimately like to publish a short document to the arXiv detailing this 
 In the meantime, I would really appreciate if you would cite
 
 ```
-@misc{berkowitz.metaq,
-  author = {Berkowitz, Evan},
-  title = {\texttt{METAQ}},
-  year = {2016},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/evanberkowitz/metaq}},
-  commit = {...}
+@article{berkowitz.metaq,
+  author = {Evan Berkowitz},
+  title = {\texttt{METAQ}: Bundle Supercomputing Tasks},
+  year = {2017},
+  eprint         = "1701.07559",
+  archivePrefix  = "arXiv",
+  primaryClass   = "physics.comp-ph",
+  url = {https://github.com/evanberkowitz/metaq},
+  howpublished = {\url{https://github.com/evanberkowitz/metaq}}
 }
 ```
 
