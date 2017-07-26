@@ -355,18 +355,19 @@ task description was emphasized as a useful trick by Chris Schroeder when I bega
 
 # LICENSE
 
-I posted a short document to the arXiv, [1702.06122](https://arxiv.org/abs/1702.06122).  Here's a `bibtex` entry that I'd appreciate if you cited if you find `METAQ` useful
+I posted a short document to the arXiv, [1702.06122](https://arxiv.org/abs/1702.06122).  Here's a `bibtex` entry [that I modified from inSPIRE](http://inspirehep.net/record/1514550/export/hx) I'd appreciate if you cited if you find `METAQ` useful
 
 ```
-@article{berkowitz.metaq,
-  author = {Evan Berkowitz},
-  title = {\texttt{METAQ}: Bundle Supercomputing Tasks},
-  year = {2017},
-  eprint         = "1702.06122",
-  archivePrefix  = "arXiv",
-  primaryClass   = "physics.comp-ph",
-  url = {https://github.com/evanberkowitz/metaq},
-  howpublished = {\url{https://github.com/evanberkowitz/metaq}}
+@article{Berkowitz:2017vcp,
+    author          = "Berkowitz, Evan",
+    title           = "{\texttt{METAQ}: Bundle Supercomputing Tasks}",
+    year            = "2017",
+    eprint          = "1702.06122",
+    archivePrefix   = "arXiv",
+    primaryClass    = "physics.comp-ph",
+    SLACcitation    = "%%CITATION = ARXIV:1702.06122;%%",
+    url             = {https://github.com/evanberkowitz/metaq},
+    howpublished    = {\url{https://github.com/evanberkowitz/metaq}}
 }
 ```
 
