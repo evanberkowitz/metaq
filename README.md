@@ -153,28 +153,28 @@ So, in the above example, you see
 
 What FLAGs are understood by `METAQ` and what do they mean?
 
-####`#METAQ NODES N`
+#### `#METAQ NODES N`
 This task requires N nodes.
 
-####`#METAQ GPUS G`
+#### `#METAQ GPUS G`
 This task requires G gpus.
 
-####`#METAQ MIN_WC_TIME [[HH:]MM:]SS`
+#### `#METAQ MIN_WC_TIME [[HH:]MM:]SS`
 This task requires the job to still have HH:MM:SS available before starting.
 
 This helps avoid having work that fails due to interruption.
 
 You may specify times in the format understood by `METAQ/x/seconds`, which converts the passed string into a number of seconds.  So, you don't have to specify canonically-formatted times.  For example, you can specify 90:00 or 5400 instead of 1:30:00.
     
-####`#METAQ LOG /absolute/path/to/log/file`
+#### `#METAQ LOG /absolute/path/to/log/file`
 Write the running log of this task to the specified path.  
 
-####`#METAQ PROJECT some.string.you.want.for.accounting.purposes`
+#### `#METAQ PROJECT some.string.you.want.for.accounting.purposes`
 METAQ doesn't worry about the task's project. However, it does log projects to `METAQ/jobs/${METAQ_JOB_ID}/resources`.  This is convenient if you have many comingled projects (or parts of projects) in the same `METAQ`.
 
 It (probably) makes sense to have the string prefixed in order of generality (most specific detail last).
 
-####`#METAQ MACHINE machine`
+#### `#METAQ MACHINE machine`
 THIS CURRENTLY DOESN'T DO ANYTHING.
 
 The intention is: If multiple machines can see the same `METAQ` but, for example, have different hardware (and thus incompatible binaries) you can nevertheless keep the `METAQ/todo` folder comingled.
@@ -251,7 +251,7 @@ If you name your job scripts `x/q_*` then git will ignore your job script.  This
 
 # MISCELLANEOUS
 
-##What is meant by a "GPU" and a "NODE"?
+## What is meant by a "GPU" and a "NODE"?
 
 THIS IS A SUBTLE BUSINESS.
 
@@ -273,13 +273,13 @@ Finally, you can set up a task that could run on different machines that seem th
 
 `METAQ` provides a number of small accessories to see what's going on.  
 
-####`x/status`
+#### `x/status`
 Reports based on tasks' PROJECT flag what's in the `METAQ/{priority,todo,hold}` folders.
 
-####`x/running`
+#### `x/running`
 Reports the current status of jobs in the working folder.  This only works if you have set up
 
-####`x/reset machineArgument`
+#### `x/reset machineArgument`
 WARNING WARNING WARNING
 
 SERIOUSLY
