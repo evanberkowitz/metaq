@@ -12,6 +12,7 @@ x/batch.sh
 
 #User job scripts:
 x/q_*
+x/q.*
 
 #PBS logs, which sometimes land in the root directory.
 *.OU
