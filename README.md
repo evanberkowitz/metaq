@@ -346,7 +346,7 @@ Some of the accessory scripts detect their own location on disk and infer what M
 
 - [ ] Tasks in the `METAQ/priority` folder are only preferred at the beginning of a job.
 
-#ACKNOWLEDGEMENTS
+# ACKNOWLEDGEMENTS
 
 `METAQ` grew out of finding collaborative HPC projects increasingly difficult to coordinate, and is a ground-up rewrite of scripts I originally crafted with [Thorsten Kurth](https://github.com/azrael417).  The separation of job submission from
 task description was emphasized as a useful trick by Chris Schroeder when I began working on lattice QCD at LLNL.
