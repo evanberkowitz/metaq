@@ -23,7 +23,7 @@ TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
                 describe their needed resources with #METAQ flags, and
                 contain the hard work you want to do.
 
-#Table of Contents
+# Table of Contents
 
 - [METAQ](#metaq)
 - [Quick Summary](#quick-summary)
