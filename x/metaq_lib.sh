@@ -105,7 +105,7 @@ function METAQ_FOLDER_CLOCK_REQUIREMENT {
 
 
 function METAQ_AVAILABLE_GPUS {
-    grep -i nodes <(awk  '{print $1" "$2}' $METAQ_RESOURCES) | awk 'BEGIN{total=0} {total+=$1} END {print total}' 2>/dev/null
+    grep -i gpus <(awk  '{print $1" "$2}' $METAQ_RESOURCES) | awk 'BEGIN{total=0} {total+=$1} END {print total}' 2>/dev/null
 }
 
 function METAQ_AVAILABLE_NODES {
