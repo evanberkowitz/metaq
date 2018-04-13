@@ -391,3 +391,25 @@ METAQ
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
+
+I also [published a proceedings for LATTICE 2017](https://www.epj-conferences.org/articles/epjconf/abs/2018/10/epjconf_lattice2018_09007/epjconf_lattice2018_09007.html) the discussing `METAQ` and bundling of tasks more generally.  The [inSPIRE entry](http://inspirehep.net/record/1628820/export/hx) is
+
+```
+@article{Berkowitz:2017xna,
+      author         = "Berkowitz, Evan and Jansen, Gustav R. and McElvain,
+                        Kenneth and Walker-Loud, André",
+      title          = "{Job Management and Task Bundling}",
+      booktitle      = "{Proceedings, 35th International Symposium on Lattice
+                        Field Theory (Lattice 2017): Granada, Spain, June 18-24,
+                        2017}",
+      journal        = "EPJ Web Conf.",
+      volume         = "175",
+      year           = "2018",
+      pages          = "09007",
+      doi            = "10.1051/epjconf/201817509007",
+      eprint         = "1710.01986",
+      archivePrefix  = "arXiv",
+      primaryClass   = "hep-lat",
+      SLACcitation   = "%%CITATION = ARXIV:1710.01986;%%"
+}
+```
