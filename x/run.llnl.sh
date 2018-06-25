@@ -40,6 +40,9 @@ METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run ou
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
+METAQ_SORT_TASKS=sort           # How to sort the result of finding tasks.
+                                # A good choice can be shuf, the command-line utility that shuffles input lines.
+
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.

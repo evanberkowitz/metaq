@@ -84,6 +84,9 @@ if [[ "$METAQ_MAX_GPUS" -gt "$METAQ_GPUS" ]]; then
     echo "    For safety and sensibility this is automatically overridden, so that METAQ_MAX_GPUS is $METAQ_GPUS."
     METAQ_MAX_GPUS=$METAQ_GPUS
 fi
+if [[ -z "$METAQ_SORT_TASKS" ]]; then
+    METAQ_SORT_TASKS="sort"
+fi
 
 ############################
 ############################ GET METAQ LIBRARY
@@ -395,7 +398,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             METAQ_PRINT 2 "Task folder contains no .metaq file."
         fi
 
-        for i in $(find $METAQ_REMAINING -type f \( ! -path '*/.*' \)| sort); do
+        for i in $(find $METAQ_REMAINING -type f \( ! -path '*/.*' \)| $METAQ_SORT_TASKS ); do
             if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then break; fi
             while [[ "$(METAQ_CURRENT_TASKS)" == "$METAQ_SIMULTANEOUS_TASKS" ]]; do
                 METAQ_PRINT 1 "Simultaneous task limit ($METAQ_SIMULTANEOUS_TASKS) saturated."
