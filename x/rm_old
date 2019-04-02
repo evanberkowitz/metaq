@@ -22,7 +22,7 @@ if [[ ! "${date}" =~ [0123456789]{4}-[0123456789]{2}-[0123456789]{2} ]]; then
     exit
 fi
 
-count=$(find "$dir" ! -newermt $date -type f | wc -l)
+count=$(find -L "$dir" ! -newermt $date -type f | wc -l)
 echo "There are ${count} files that will be deleted."
 if [[ "${count}" == "0" ]]; then
     echo "Nothing to do."
@@ -31,7 +31,7 @@ fi
 
 read -p "DELETE all files in $dir older than $date ? y[es] / n[o]    " proceed
 case $proceed in
-    yes|Yes|y|Y) echo "  DELETING:"; find "$dir" ! -newermt $date -type f -print -delete ;;
+    yes|Yes|y|Y) echo "  DELETING:"; find -L "$dir" ! -newermt $date -type f -print -delete ;;
     *) echo "    Exiting without deleting."; ;;
 esac
 
