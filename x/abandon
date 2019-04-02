@@ -1,0 +1,76 @@
+#!/bin/bash
+
+METAQ=$( cd $(dirname $0)/.. ; pwd -P )
+METAQ_X=${METAQ}/x
+METAQ_LIB=${METAQ_X}/metaq_lib.sh
+METAQ_VERBOSITY=3
+METAQ_MACHINE=$1
+
+if [[ ! -f ${METAQ_LIB} ]]; then
+    echo "METAQ library is missing from ${METAQ_LIB}"
+    exit
+fi
+
+source ${METAQ_LIB}
+
+###
+### CHECK JOBS AND RESET
+###
+
+if [[ -z "$METAQ_MACHINE" ]]; then
+    echo "One mandatory argument: machine"
+    exit
+fi
+
+METAQ_WORKING=${METAQ_WORKING_BASE}/${METAQ_MACHINE}
+
+if [[ ! -d ${METAQ_WORKING} ]]; then
+    echo "No working folder at ${METAQ_WORKING}."
+    exit
+fi
+
+MACHINE_MATCH='^'"$METAQ_MACHINE"'.*$'
+if [[ ! "$HOSTNAME" =~ $MACHINE_MATCH ]]; then
+
+    echo "You are on machine                                $HOSTNAME"
+    echo "You intend to abandon tasks as though you are on  $METAQ_MACHINE"
+    echo ""
+    echo "If these don't match, you might cause yourself a headache."
+    echo ""
+    read -p "Do you wish to proceed? [y/N] " proceed
+    echo ""
+
+    YES='^[yY].*$'
+
+    if [[ ! -z "$proceed" && "$proceed" =~ $YES ]]; then
+        echo "                              OK, abandoning"
+    else
+        echo "                              NOT abandoning."
+        exit
+    fi
+fi
+
+
+if [[ ! "function" == "$(type -t METAQ_JOB_RUNNING)" ]]; then
+    echo "METAQ_JOB_RUNNING is not a valid bash function."
+    echo "Proceeding could cause catastrophic loss of currently running jobs."
+    echo "Exiting for safety."
+    exit;
+fi
+
+for job in ${METAQ_WORKING}/*; do
+    if [[ "$job" == "${METAQ_WORKING}/*" ]]; then
+        echo "No jobs to consider."
+        continue
+    fi
+    job_id=${job##*/}
+    METAQ_PRINT 0 "Checking job ${job_id}..."
+    if [[ -z "$(METAQ_JOB_RUNNING $job_id)" ]] ; then
+        METAQ_PRINT 1 "Resetting jobs..."
+        if [[ ! -z "$job" ]]; then
+            rm -rf $job ${METAQ_PRIORITY} 2>/dev/null
+        fi
+    else
+        METAQ_PRINT 1 "Job is running."
+    fi
+done
