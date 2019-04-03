@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$#" != "1" ]]; then
+	echo "One argument required: machine"
+	exit -1
+fi
+
 machine=$1
 
 for j in $(ls working/${machine}); do 
