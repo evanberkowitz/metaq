@@ -1,0 +1,7 @@
+#!/bin/bash
+
+machine=$1
+
+for j in $(ls working/${machine}); do 
+	echo $j `ls working/${machine}/$j | wc -l` `ls jobs/$j/log | wc -l`; 
+done
