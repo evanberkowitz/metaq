@@ -66,7 +66,7 @@ for job in ${METAQ_WORKING}/*; do
     job_id=${job##*/}
     METAQ_PRINT 0 "Checking job ${job_id}..."
     if [[ -z "$(METAQ_JOB_RUNNING $job_id)" ]] ; then
-        METAQ_PRINT 1 "Resetting jobs..."
+        METAQ_PRINT 1 "Abandoning job..."
         if [[ ! -z "$job" ]]; then
             rm -rf $job 2>/dev/null
         fi
