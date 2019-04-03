@@ -68,7 +68,7 @@ for job in ${METAQ_WORKING}/*; do
     if [[ -z "$(METAQ_JOB_RUNNING $job_id)" ]] ; then
         METAQ_PRINT 1 "Resetting jobs..."
         if [[ ! -z "$job" ]]; then
-            rm -rf $job ${METAQ_PRIORITY} 2>/dev/null
+            rm -rf $job 2>/dev/null
         fi
     else
         METAQ_PRINT 1 "Job is running."
