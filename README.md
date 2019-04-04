@@ -234,6 +234,12 @@ METAQ_MAX_NODES=${METAQ_NODES}  # Integers that puts an upper size limit on jobs
 METAQ_MAX_GPUS=${METAQ_GPUS}    # If the main loop decides that there were no possible jobs, it will double these maximal
                                 # values and loop again.  It will only concede that there are truly no possible jobs when
                                 # these maximal values max out at METAQ_NODES and METAQ_GPUS respectively.
+METAQ_SORT_TASKS=sort           # How to sort the result of finding tasks.
+                                # A good choice can be shuf, the command-line utility that shuffles input lines.
+METAQ_SKIP_ON_STOLEN=false      # {false,directory,reset}, what to do if a task is stolen.
+                                #     On directory, break out of this directory and proceed to the next one.
+                                #     On reset, begin the loop over METAQ_TASK_FOLDERS again.
+                                #     On false, or anything else, just look at the next task.
 
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
@@ -273,25 +279,28 @@ Finally, you can set up a task that could run on different machines that seem th
 
 `METAQ` provides a number of small accessories to see what's going on.  
 
+#### `x/current [optionalMachineArgument]`
+Reports which jobs are in the working directory, machine-by-machine unless a machine is provided.  The first column is the `machine/job`, the second is how many are currently working, the last is how many log files in total there are.
+
 #### `x/status`
 Reports based on tasks' PROJECT flag what's in the `METAQ/{priority,todo,hold}` folders.
 
 #### `x/running`
 Reports the current status of jobs in the working folder.  This only works if you have set up
 
-#### `x/reset machineArgument`
+#### `x/reset machineArgument`; `x/abandon machineArgument`
 WARNING WARNING WARNING
 
 SERIOUSLY
 
 HANDLE WITH CARE!
-    
-If your queue contains only work for one machine, this is perfectly fine.  
-However, if `METAQ_JOB_RUNNING` (see below on interacting with the batch scheduler) could potentially miss the existence of a job then this command can wreck havoc.
-This script looks in the `working/${machineArgument}` directory, and looks for abandoned work.
-If it finds work for a `METAQ_JOB_ID` that is no longer running, it moves the task scripts into the `METAQ/priority` folder and deletes the `METAQ/working/${machineArgument}/METAQ_JOB_ID` folder.
 
-`x/reset` will compare `$HOSTNAME` to `^${machineArgument}.*$`.  If there's a match, the assumption is that running `x/reset` is probably OK.  If there's a mismatch, the user will get a warning and prompted for confirmation.
+If your queue contains only work for one machine, this is perfectly fine.  
+However, if `METAQ_JOB_RUNNING` (see below on interacting with the batch scheduler) could potentially miss the existence of a job then these commands can wreck havoc.
+These scripts look in the `working/${machineArgument}` directory for jobs that are no longer running.
+If it finds work for a `METAQ_JOB_ID` that is no longer running, `x/abandon` deletes the `METAQ/working/${machineArgument}/METAQ_JOB_ID` folder, `x/reset` moves the task scripts into the `METAQ/priority` folder first.
+
+`x/{abandon,reset}` will compare `$HOSTNAME` to `^${machineArgument}.*$`.  If there's a match, the assumption is that running `x/reset` is probably OK.  If there's a mismatch, the user will get a warning and prompted for confirmation.
 
 
 ## INTERACTING WITH THE BATCH SCHEDULER
@@ -333,6 +342,7 @@ You can perform a bare-bones test from the `METAQ` directory by running `x/demo.
 
 Some of the accessory scripts detect their own location on disk and infer what METAQ they belong to.  These include:
 
+- [ ] x/current
 - [ ] x/report
 - [ ] x/reset
 - [ ] x/running

@@ -48,6 +48,11 @@ METAQ_MAX_GPUS=${METAQ_GPUS}    # If the main loop decides that there were no po
                                 # these maximal values max out at METAQ_NODES and METAQ_GPUS respectively.
 METAQ_SORT_TASKS=sort           # How to sort the result of finding tasks.
                                 # A good choice can be shuf, the command-line utility that shuffles input lines.
+METAQ_SKIP_ON_STOLEN=false      # {false,directory,reset}, what to do if a task is stolen.
+                                #     On directory, break out of this directory and proceed to the next one.
+                                #     On reset, begin the loop over METAQ_TASK_FOLDERS again.
+                                #     On false, or anything else, just look at the next task.
+
 
 # ANYTHING ELSE YOU WANT TO DO BEFORE LAUNCHING.
 # For example, you can have this script resubmit itself.
