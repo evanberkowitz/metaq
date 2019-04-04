@@ -1,12 +1,13 @@
 #!/bin/bash
 
-if [[ "$#" != "1" ]]; then
-	echo "One argument required: machine"
-	exit -1
+if [[ "$#" == "1" ]]; then
+    FOLDERS=$1
+else
+    FOLDERS="*"
 fi
 
-machine=$1
-
-for j in $(ls working/${machine}); do 
-	echo $j `ls working/${machine}/$j | wc -l` `ls jobs/$j/log | wc -l`; 
+for machine in working/${FOLDERS}; do
+    for j in $(ls ${machine}); do 
+    	echo ${machine##*/}/$j `ls ${machine}/$j | wc -l` `ls jobs/$j/log | wc -l`; 
+    done
 done
