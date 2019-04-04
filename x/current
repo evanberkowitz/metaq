@@ -1,13 +1,15 @@
 #!/bin/bash
 
+METAQ=$( cd $(dirname $0)/.. ; pwd -P )
+
 if [[ "$#" == "1" ]]; then
     FOLDERS=$1
 else
     FOLDERS="*"
 fi
 
-for machine in working/${FOLDERS}; do
+for machine in ${METAQ}/working/${FOLDERS}; do
     for j in $(ls ${machine}); do 
-    	echo ${machine##*/}/$j `ls ${machine}/$j | wc -l` `ls jobs/$j/log | wc -l`; 
+    	echo ${machine##*working/}/$j `ls ${machine}/$j | wc -l` `ls ${METAQ}/jobs/$j/log | wc -l`; 
     done
 done
