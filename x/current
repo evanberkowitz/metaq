@@ -10,6 +10,6 @@ fi
 
 for machine in ${METAQ}/working/${FOLDERS}; do
     for j in $(ls ${machine}); do 
-    	echo ${machine##*working/}/$j `ls ${machine}/$j | wc -l` `ls ${METAQ}/jobs/$j/log | wc -l`; 
+        echo ${machine##*working/}/$j `ls ${machine}/$j | wc -l` `ls ${METAQ}/jobs/$j/log | wc -l`; 
     done
 done
