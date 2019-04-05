@@ -464,6 +464,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     done
     
     if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" && "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
+        METAQ_ATTEMPT_RESULT="RESET"
         continue; # the main while loop.
     fi
     
