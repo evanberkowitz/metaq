@@ -87,6 +87,9 @@ fi
 if [[ -z "$METAQ_SORT_TASKS" ]]; then
     METAQ_SORT_TASKS="sort"
 fi
+if [[ -z "$METAQ_SKIP_ON_STOLEN" ]]; then
+    METAQ_SKIP_ON_STOLEN="false"
+fi
 
 ############################
 ############################ GET METAQ LIBRARY
@@ -441,12 +444,29 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
                 METAQ_LAUNCH_SUCCESS=true
             fi
+            if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" ]]; then
+                if [[ "${METAQ_SKIP_ON_STOLEN}" == "directory" || "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
+                    METAQ_PRINT 2 "Since the task was stolen, skipping ${METAQ_SKIP_ON_STOLEN}"
+                    break; # from the loop over tasks
+                fi
+            fi
             if [[ (! "${METAQ_ATTEMPT_RESULT}" == "CLOCK") && (! "${METAQ_ATTEMPT_RESULT}" == "IMPOSSIBLE") ]]; then
                 METAQ_LOOP_TASKS_REMAIN=true
             fi
             sleep 1 #so that launched subprocesses have time to start.
         done
+        
+        # If we broke out of the directory, should we go back to priority tasks?
+        if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" && "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
+            METAQ_LOOP_TASKS_REMAIN=true    # We don't actually know---we have to loop again to decide if there are any tasks remaining.
+            break; # from the loop over METAQ_TASK_FOLDERS
+        fi
     done
+    
+    if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" && "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
+        METAQ_ATTEMPT_RESULT="RESET"
+        continue; # the main while loop.
+    fi
     
     if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then 
         echo "Launched maximum number of tasks: ${METAQ_LAUNCHES}."
