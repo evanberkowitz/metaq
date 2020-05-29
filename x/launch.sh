@@ -43,6 +43,10 @@ fi
 if [[ -z "$METAQ_GPUS" ]]; then
     METAQ_GPUS=0
 fi
+
+if [[ -z "$METAQ_SLEEP_AFTER_LAUNCH" ]]; then
+    METAQ_SLEEP_AFTER_LAUNCH=0 #seconds
+fi
 if [[ -z "$METAQ_SLEEPY_TIME" ]]; then
     METAQ_SLEEPY_TIME=3 #seconds
 fi
@@ -96,7 +100,7 @@ fi
 ############################
 
 if [[ ! -f "${METAQ_X}/metaq_lib.sh" ]]; then
-    echo "METAQ library is missing from ${METAQ_X}/metaq_lib.sh" 
+    echo "METAQ library is missing from ${METAQ_X}/metaq_lib.sh"
     exit
 fi
 
@@ -191,7 +195,7 @@ done
 _METAQ_INTERRUPT() {
 
     echo ""
-    echo 
+    echo
     echo "METAQ IS INTERRUPTED"
     echo $(date "+%Y-%m-%dT%H:%M:%S")
     echo "KILLING DEPENDENT PROCESSES"
@@ -211,6 +215,7 @@ trap _METAQ_INTERRUPT SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGTERM
 
 METAQ_ATTEMPT_RESULT=""
 function METAQ_ATTEMPT_TASK {
+
     METAQ_TASK_FULL=$1
     METAQ_TASK=${METAQ_TASK_FULL##*/}
     METAQ_ATTEMPT_RESULT=""
@@ -281,11 +286,11 @@ function METAQ_ATTEMPT_TASK {
         METAQ_ATTEMPT_RESULT="MAX_GPUS"
         return
     fi
-    
+
     # Make sure you log the task to the requested location.
     METAQ_TASK_LOG=$(METAQ_TASK_LOG_FILE $METAQ_TASK_FULL)
     METAQ_TASK_PROJ=$(METAQ_TASK_PROJECT $METAQ_TASK_FULL)
-    
+
     if [[ ! -z "$METAQ_TASK_LOG" ]]; then
         METAQ_TASK_LOG_FOLDER=$(dirname $METAQ_TASK_LOG);
         if [[ ! -d "$METAQ_TASK_LOG_FOLDER" ]]; then
@@ -293,7 +298,7 @@ function METAQ_ATTEMPT_TASK {
             mkdir -p "$METAQ_TASK_LOG_FOLDER" 2>/dev/null
         fi
     fi
-    
+
     # If the task specified a project for accounting purposes, make sure you log that.
     if [[ ! -z "$METAQ_TASK_PROJ" ]]; then
         METAQ_TASK_PROJ=" for project $METAQ_TASK_PROJ"
@@ -308,10 +313,11 @@ function METAQ_ATTEMPT_TASK {
     if mv $METAQ_TASK_FULL $METAQ_WORKING/ 2>/dev/null; then
         # If you successfully move the task script to the working directory, you know nobody else did the same.
         # Therefore, start it!
+
         (
             # Keep track of the run time:
             METAQ_TASK_START=$(date "+%s")
-            
+
             # Allocate the resources required in the resources ledger.
             echo "-$METAQ_TASK_NODES_REQUIRED nodes dedicated to ${METAQ_WORKING}/${METAQ_TASK}${METAQ_TASK_PROJ} at $(date "+%Y-%m-%dT%H:%M")" >> $METAQ_RESOURCES
             echo "-$METAQ_TASK_GPUS_REQUIRED gpus dedicated to ${METAQ_WORKING}/${METAQ_TASK}${METAQ_TASK_PROJ} at $(date "+%Y-%m-%dT%H:%M")" >> $METAQ_RESOURCES
@@ -330,18 +336,18 @@ function METAQ_ATTEMPT_TASK {
                 # If the task DID specify a log, log it to both the METAQ location and the requested location.
                 $METAQ_WORKING/$METAQ_TASK 2>&1 | tee ${METAQ_LOG}/${METAQ_TASK}.log > $METAQ_TASK_LOG
             fi
-            
+
             # The hard work is finished.  Time to clean up.
-            
+
             # First, move the task to the finished folder
             mv $METAQ_WORKING/$METAQ_TASK $METAQ_FINISHED 2>/dev/null
             # Touch the file to update the time stamp
             touch $METAQ_FINISHED/$METAQ_TASK
-            
+
             # Figure out how much time you spent:
             METAQ_TASK_END=$(date "+%s")
             METAQ_TASK_RUNTIME=$(echo "$METAQ_TASK_END $METAQ_TASK_START" | awk '{print $1-$2}')
-            
+
             # Release the dedicated resources back into the ledger, and log the run time statistics.
             echo "+$METAQ_TASK_NODES_REQUIRED nodes released by ${METAQ_WORKING}/${METAQ_TASK}${METAQ_TASK_PROJ} at $(date "+%Y-%m-%dT%H:%M"). RUNTIME: ${METAQ_TASK_RUNTIME} seconds" >> $METAQ_RESOURCES
             echo "+$METAQ_TASK_GPUS_REQUIRED gpus released by ${METAQ_WORKING}/${METAQ_TASK}${METAQ_TASK_PROJ} at $(date "+%Y-%m-%dT%H:%M"). RUNTIME: ${METAQ_TASK_RUNTIME} seconds" >> $METAQ_RESOURCES
@@ -349,11 +355,11 @@ function METAQ_ATTEMPT_TASK {
 
         # Increment the launch counter by 1
         METAQ_LAUNCHES=$[ $METAQ_LAUNCHES + 1 ]
-        
+
         # Report success
         METAQ_PRINT 3 "Launched."
         METAQ_ATTEMPT_RESULT="LAUNCHED"
-    else 
+    else
         #If your move failed, some other job snagged the task before you could get to it.
         METAQ_PRINT 3 "$METAQ_TASK no longer available for execution."
         METAQ_ATTEMPT_RESULT="STOLEN"
@@ -376,7 +382,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
 
     for METAQ_REMAINING in ${METAQ_TASK_FOLDERS[@]}; do
         METAQ_PRINT 0 "Looping over tasks in ${METAQ_REMAINING}"
-        
+
         METAQ_SMART_FOLDER=false
         METAQ_SMART_FOLDER_SETTINGS="$METAQ_REMAINING/.metaq"
         if [[ -f $METAQ_SMART_FOLDER_SETTINGS ]]; then
@@ -411,7 +417,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
                 METAQ_PRINT 2 "$(METAQ_AVAILABLE_GPUS) gpus will sit idle until task completion."
                 sleep ${METAQ_SLEEPY_TIME_TASK_SATURATION}
             done
-            
+
             if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_NODES -gt $METAQ_NODES ]]; then
                 METAQ_PRINT 1 "Skipping tasks because folder NODE requirement $METAQ_FOLDER_NODES exceeds the allocated $METAQ_NODES nodes."
                 break
@@ -421,7 +427,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
                 break
             fi
             METAQ_CHECK_CLOCK=$(METAQ_TIME_REMAINING)
-            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_TIME_REQUIRED -gt $METAQ_CHECK_CLOCK ]]; then 
+            if $METAQ_SMART_FOLDER && [[ $METAQ_FOLDER_TIME_REQUIRED -gt $METAQ_CHECK_CLOCK ]]; then
                 METAQ_PRINT 1 "Skipping tasks because folder time requirement $($METAQ_X/timespan $METAQ_FOLDER_TIME_REQUIRED) exceeds the available clock time $($METAQ_X/timespan $METAQ_CHECK_CLOCK)."
                 break
             fi
@@ -443,6 +449,13 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             METAQ_PRINT 2 "${METAQ_ATTEMPT_RESULT} at $(date "+%Y-%m-%dT%H:%M:%S")"
             if [[ "${METAQ_ATTEMPT_RESULT}" == "LAUNCHED" ]]; then
                 METAQ_LAUNCH_SUCCESS=true
+
+                # Take a breath.
+                if [[ "0" != "$METAQ_SLEEP_AFTER_LAUNCH" ]]; then
+                    METAQ_PRINT 3 "After launch sleeping ${METAQ_SLEEP_AFTER_LAUNCH} seconds."
+                    sleep $METAQ_SLEEP_AFTER_LAUNCH
+                fi
+
             fi
             if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" ]]; then
                 if [[ "${METAQ_SKIP_ON_STOLEN}" == "directory" || "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
@@ -455,24 +468,24 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
             fi
             sleep 1 #so that launched subprocesses have time to start.
         done
-        
+
         # If we broke out of the directory, should we go back to priority tasks?
         if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" && "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
             METAQ_LOOP_TASKS_REMAIN=true    # We don't actually know---we have to loop again to decide if there are any tasks remaining.
             break; # from the loop over METAQ_TASK_FOLDERS
         fi
     done
-    
+
     if [[ "${METAQ_ATTEMPT_RESULT}" == "STOLEN" && "${METAQ_SKIP_ON_STOLEN}" == "reset" ]]; then
         METAQ_ATTEMPT_RESULT="RESET"
         continue; # the main while loop.
     fi
-    
-    if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then 
+
+    if [[ ! $METAQ_LAUNCHES -lt $METAQ_MAX_LAUNCHES ]]; then
         echo "Launched maximum number of tasks: ${METAQ_LAUNCHES}."
-        break; 
+        break;
     fi
-    
+
     METAQ_PRINT 0 ""
     METAQ_PRINT 0 ""
     METAQ_PRINT 0 "Tried to launch all available tasks."
@@ -509,7 +522,7 @@ while $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; do
     if $METAQ_LOOP_TASKS_REMAIN || $METAQ_LOOP_FOREVER; then
         METAQ_PRINT 0 "Sleeping $METAQ_SLEEPY_TIME seconds."
         sleep $METAQ_SLEEPY_TIME
-    fi 
+    fi
 done
 
 METAQ_PRINT 0 "No more tasks remains.  Waiting for task completion."
@@ -540,4 +553,3 @@ METAQ_PRINT 0 "RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_
 
 METAQ_PRINT 1 "-${METAQ_NODES} nodes released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))" >> $METAQ_RESOURCES
 METAQ_PRINT 1 "-${METAQ_GPUS}  gpus released by ${METAQ_JOB_ID} at ${METAQ_FINISH}.  RUNTIME: ${METAQ_TOTAL_SEC} seconds ($($METAQ_X/timespan ${METAQ_TOTAL_SEC}))"  >>  $METAQ_RESOURCES
-

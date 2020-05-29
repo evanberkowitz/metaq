@@ -14,9 +14,9 @@ JOB SCRIPTS all do the same thing when launched by the BATCH SCHEDULER: look thr
 
 The BATCH SCHEDULER controls the computational resources.  This is chosen by the administrator of your computer.  Examples include SLURM and PBS.
 
-JOB SCRIPTS     are bash scripts that get submitted to the scheduler, 
+JOB SCRIPTS     are bash scripts that get submitted to the scheduler,
                 contain some amount of user-specified `METAQ` options,
-                convert BATCH SCHEDULER variables to `METAQ` variables, and 
+                convert BATCH SCHEDULER variables to `METAQ` variables, and
                 call `METAQ/x/launch.sh`
 
 TASK SCRIPTS    get put in the `METAQ/todo` and `METAQ/priority` folders,
@@ -165,7 +165,7 @@ This task requires the job to still have HH:MM:SS available before starting.
 This helps avoid having work that fails due to interruption.
 
 You may specify times in the format understood by `METAQ/x/seconds`, which converts the passed string into a number of seconds.  So, you don't have to specify canonically-formatted times.  For example, you can specify 90:00 or 5400 instead of 1:30:00.
-    
+
 #### `#METAQ LOG /absolute/path/to/log/file`
 Write the running log of this task to the specified path.  
 
@@ -198,7 +198,7 @@ The script below shows all the user-specifiable options.  For the optional optio
 # REQUIRED USER-SPECIFIED OPTIONS
 
 METAQ=/full/path/to/metaq       # Specifies the full path to the metaq folder itself.
-METAQ_JOB_ID=${SLURM_JOB_ID}    # Any string.  You don't have to use the batch scheduler ID, 
+METAQ_JOB_ID=${SLURM_JOB_ID}    # Any string.  You don't have to use the batch scheduler ID,
                                 # but you should ensure that the METAQ_JOB_ID is unique.
 METAQ_NODES=${SLURM_NNODES}     # Integer, which should be less than or equal to the nodes specified to the batch scheduler.
                                 # But if it's less than, you're guaranteeing you're wasting resources.
@@ -211,7 +211,7 @@ METAQ_MACHINE=machine           # Any string. Helps organize the working directo
 # OPTIONAL USER-SPECIFIED OPTIONS, with their defaults
 
 METAQ_TASK_FOLDERS=(            # A bash array of priority-ordered absolute paths in which to look for tasks.
-    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of 
+    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of
     $METAQ/todo                 # metrics.  Our original use was to separate tasks by nodes, so that we could waste as little
     )                           # time as possible looking for a "big" task.
 METAQ_GPUS=0                    # An integer describing how many GPUs are allocated to this job.
@@ -220,6 +220,9 @@ METAQ_MAX_LAUNCHES=1048576      # An integer that limits the number of tasks tha
 METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run out the wall clock?  
                                 # If METAQ_LOOP_FOREVER is true then METAQ will continue to look for remaining tasks,
                                 # even if it finds none and it is not waiting for any tasks to finish.
+METAQ_SLEEP_AFTER_LAUNCH=0      # seconds to sleep after a task is successfully launched.
+                                # We suspected that slowing down the launching might solve some unusual behavior we
+                                # experienced when multiple METAQ jobs ran simultaneously.
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.
@@ -270,7 +273,7 @@ If you CAN overcommit (eg. on Surface), then potentially what you should mean by
 However, it may be that your binary is smart and knows how make use of all the resources on the whole physical node at once.  In that case you can again forget about GPUs and just worry about NODEs.
 
 If some of your tasks are smart and can use the whole node and some cannot, you need to be careful.  Because `METAQ` makes no promises about where the available NODEs and GPUs are.  It could be, for example, that there is 1 GPU free over HERE and a bunch of CPUs free over THERE and then it may not make sense to run a 1 NODE 1 GPU job.  In this case you should again think of NODES as representing full physical nodes (CPUs and GPUs) and simply be OK with wasting some of the resources some of the time.
-    
+
 So, to summarize: GPU is really a stand-in for a way to partition the physical node.  You should make sure your partition makes sense and is compatible between all your tasks.
 
 Finally, you can set up a task that could run on different machines that seem the same `METAQ`.  However, currently `METAQ` doesn't know how to read machine-dependent settings.  In the example where we first understood this meature of `METAQ`, one machine had nodes with huge memory while the other didn't, meaning that on the first we could run on one physical node and on the other we needed four physical nodes.  By writing a machine-aware task script, setting the `#METAQ NODE` flag to 1, and setting `METAQ_NODES` to `(physical nodes / 4)` on the smaller machine, we could circumvent this hardware requirement mismatch.

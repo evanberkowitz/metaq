@@ -28,7 +28,7 @@ METAQ_MACHINE=machine           # Any string. Right now doesn't do anything, but
 # These may be omitted if you want.
 
 METAQ_TASK_FOLDERS=(            # A bash array of priority-ordered absolute paths in which to look for tasks.
-    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of 
+    $METAQ/priority             # This allows a user to segregate tasks and order their importance based on any number of
     $METAQ/todo                 # metrics.  Our original use was to separate tasks by nodes, so that we could waste as little
     )                           # time as possible looking for a "big" task.
 METAQ_GPUS=0                    # An integer describing how many GPUs are allocated to this job.
@@ -37,6 +37,9 @@ METAQ_MAX_LAUNCHES=1048576      # An integer that limits the number of tasks tha
 METAQ_LOOP_FOREVER=false        # Bash booleans {true,false}.  Should you run out the wall clock?
                                 # If METAQ_LOOP_FOREVER is true then METAQ will continue to look for remaining tasks,
                                 # even if it finds none and it is not waiting for any tasks to finish.
+METAQ_SLEEP_AFTER_LAUNCH=0      # seconds to sleep after a task is successfully launched.
+                                # We suspected that slowing down the submission might solve some unusual behavior we
+                                # experienced when multiple METAQ jobs ran simultaneously.
 METAQ_SLEEPY_TIME=3             # Number of seconds to sleep before repeating the main task-attempting loop.
 METAQ_VERBOSITY=2               # How much detail do you want to see?
                                 # Levels of detail are offset by tabbing 4 spaces.

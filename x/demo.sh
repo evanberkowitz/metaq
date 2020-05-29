@@ -20,7 +20,7 @@ else
     echo "You have things in your todo folder."
     echo "Demo is aborting."
     exit
-    
+
 fi
 
 for t in {0..7}; do
@@ -49,10 +49,12 @@ METAQ_NODES=16  # It's a lie!
 METAQ_GPUS=32   # It's a lie!
 METAQ_SIMULTANEOUS_TASKS=4
 METAQ_MACHINE=mq.test.machine
-METAQ_RUN_TIME=300
+METAQ_RUN_TIME=600
 METAQ_VERBOSITY=5
 METAQ_MAX_NODES=1
 METAQ_MAX_GPUS=2
 # METAQ_SORT_TASKS=shuf
+
+METAQ_SLEEP_AFTER_LAUNCH=5
 
 source x/launch.sh
